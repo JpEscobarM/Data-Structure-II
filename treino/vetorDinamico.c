@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main()
 {
@@ -9,18 +10,20 @@ int main()
     printf("\nDigite um tamanho para o vetor: ");
     scanf("%d",&tamanho);
 
+    srand(time(NULL));
+
     vet = malloc(sizeof(int)*tamanho);
 
     for(int i = 0 ; i < tamanho; i++)
     {
 
-        *(vet + i ) = 0;
+        *(vet + i ) = rand() % 100 ;
     }
 
     for(int i = 0 ; i < tamanho; i++)
     {
 
-        printf("%d",*(vet + i ));
+        printf("%d ",*(vet + i ));
     }
 
 
