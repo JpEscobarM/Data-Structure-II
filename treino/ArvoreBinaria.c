@@ -28,7 +28,7 @@ No* inserirV1(No **raiz, int num){
 
      *raiz = novo;
 
-     printf("Na funcao %d\n", (*raiz)->num);
+
 
      return novo;
     }
@@ -46,6 +46,32 @@ No* inserirV1(No **raiz, int num){
 
 }
 
+void imprimirV1(No **raiz)
+{
+    if(*raiz)
+    {
+        printf("%d ",(*raiz)->num);
+        imprimirV1(&(*raiz)->esq);
+        imprimirV1(&(*raiz)->dir);
+
+    }
+
+}
+
+void imprimirV2(No **raiz)
+{
+    if(*raiz)
+    {
+
+        imprimirV2(&(*raiz)->esq);
+        printf("%d ",(*raiz)->num);
+        imprimirV2(&(*raiz)->dir);
+
+    }
+
+}
+
+
 int
 main
 (
@@ -54,17 +80,15 @@ main
 
  No *raiz = NULL;
 
-No *NoAlocado = NULL;
 
 
-    raiz = inserirV1(&raiz,2);
-            inserirV1(&raiz,3);
-
-        inserirV1(&raiz,1);
+    inserirV1(&raiz,2);
+    inserirV1(&raiz,3);
+    inserirV1(&raiz,1);
 
 
 
-      printf("%d", raiz->num);
+    imprimirV1(&raiz);
 
 return 0;
 }
