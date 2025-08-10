@@ -222,7 +222,19 @@ No* removerNo(No **raiz, int chave){
             {
                if((*raiz)->esq != NULL && (*raiz)->dir != NULL) //SE O NO TEM 2 FILHOS
                {
-
+                   //AO REMOVER NO COM DOIS FILHOS ==>>
+                    //ELEMENTO MAIS A DIREITA DA SUBARVORE A ESQUERDA
+                    // OU ELEMENTO MAIS A ESQUERDA DA SUBARVORE A DIREITA
+                No *aux = (*raiz)->esq;
+                while ( aux->dir != NULL)
+                {
+                    aux = aux->dir;
+                }
+                (*raiz)->num = aux->num; //TROCA O CONTEUDO DO NO REMOVIDO PELO MAIS A DIREITA
+                aux->num = chave;
+                printf("\n No com dois filhos removido");
+                (*raiz)->esq = removerNo(&(*raiz)->esq,chave);//CHAMA RECURSIVO PRA REMOVER O NO FOLHA COM A CHAVE
+                return *raiz;
                }
                else //SE TIVER 1 FILHO
                {
@@ -269,12 +281,12 @@ int main()
 
     srand(time(NULL));
 
-    for(int i = 0 ; i < 15; i ++)
+ /*   for(int i = 0 ; i < 15; i ++)
     {
 
-        inserirV2(&raiz,i);
+        inserirV2(&raiz,rand()%100);
     }
-
+*/
     op = 1;
 
 
