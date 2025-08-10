@@ -198,6 +198,67 @@ int altura (No **raiz)
     }
 }
 
+No* removerNo(No **raiz, int chave){
+
+    if(*raiz == NULL)
+    {
+        printf("\n valor nao encontrado");
+               return NULL;
+    }
+    else
+    {
+        //procurar no remover
+        if((*raiz)->num == chave)
+        {
+            //remover no folha
+            if((*raiz)->esq == NULL && (*raiz)->dir == NULL)
+            {
+                printf("\nNo folha removido: %d",(*raiz)->num);
+                free((*raiz));
+
+                return NULL;
+            }
+            else //remover no com filho
+            {
+               if((*raiz)->esq != NULL && (*raiz)->dir != NULL) //SE O NO TEM 2 FILHOS
+               {
+
+               }
+               else //SE TIVER 1 FILHO
+               {
+                    No *aux;
+                    if((*raiz)->esq != NULL)
+                    {
+                        aux =(*raiz)->esq;
+                    }
+                    else
+                    {
+                        aux =(*raiz)->dir;
+                    }
+                    printf("\nNo removido: %d",(*raiz)->num);
+                    free(*raiz);
+                    return aux;
+               }
+
+            }
+        }
+        else
+        {
+            if( chave < (*raiz)->num)
+            {
+                (*raiz)->esq = removerNo(&(*raiz)->esq,chave);
+            }
+            else
+            {
+                (*raiz)->dir = removerNo(&(*raiz)->dir,chave);
+            }
+            return *raiz;
+        }
+    }
+
+
+}
+
 
 int main()
 {
@@ -211,7 +272,7 @@ int main()
     for(int i = 0 ; i < 15; i ++)
     {
 
-        inserirV2(&raiz,rand()%100);
+        inserirV2(&raiz,i);
     }
 
     op = 1;
@@ -228,6 +289,8 @@ int main()
         printf("\n| 4 - ALTURA  ");
         printf("\n| 5 - NRO DE NOS");
          printf("\n| 6 - NRO DE FOLHAS");
+         printf("\n| 7 - REMOVER");
+         printf("\n");
         scanf("%d", &op);
         switch (op)
         {
@@ -268,6 +331,11 @@ int main()
             break;
         case 6:
             printf("\FOLHAS: %d", quantidadeFolhas(&raiz));
+            break;
+        case 7:
+              printf("\nDIGITE O VALOR A SER REMOVIDO:_");
+            scanf("%d", &valor);
+             raiz = removerNo(&raiz,valor);
             break;
 
         }
