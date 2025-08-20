@@ -75,15 +75,19 @@ No *busca(No *no, int ch)
     else return NULL;   //nó é NULL, não há como buscar
 }
 
-void ordenaChaves(int *v,tam)
+void ordenaChaves(int *v,int tam)
 {
 
+int aux;
         for(int i = 0; i < tam ; i ++)
         {
             for(int j =0; j < tam ; j ++)
             {
                 if(v[i] > v[j])
                 {
+                    aux = v[j];
+                    v[j] = v[i];
+                    v[i] = aux;
 
                 }
             }
@@ -127,9 +131,9 @@ int main()
 
     No *raiz = NULL;
 
+    int v[5] = {2,4,5,1,3};
 
-
-
+    ordenaChaves(v,5);
 
 
     return 0;

@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1755601199 source:c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree.c
+	"btree.h"
+
+1755606130 c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree.h
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	"util.h"
+	"btree_util.h"
+
+1755605428 c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\util.h
+
+1755606179 c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree_util.h
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	"util.h"
+
+1755601199 source:c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree_tools.c
+	"btree_tools.h"
+
+1755605340 c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree_tools.h
+	<stdio.h>
+	"btree.h"
+
+1755606509 source:c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\btree_util.c
+	"btree_util.h"
+
+1755607213 source:c:\users\jmartins\repos\data-structure-ii\btree\tde1\arvoreb\main.c
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	"btree.h"
+	"btree_tools.h"
+

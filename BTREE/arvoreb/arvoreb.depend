@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1755628524 source:c:\users\jmartins\repos\data-structure-ii\btree\arvoreb\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
