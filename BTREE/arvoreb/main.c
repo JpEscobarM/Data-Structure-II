@@ -35,7 +35,7 @@ No *criaNo()
         novo->pai = NULL;
 
 
-      novo->chaves = malloc(sizeof(int)*(NUM_CHAVES+1));
+      novo->chaves = malloc(sizeof(int)*(NUM_CHAVES+1)); //NUM DE CHAVES 2*ORDEM + 1 (O +1 É ESPAÇO PRO VALOR OVERFLOW)
 
 
         novo->filhos = malloc(sizeof(No*)*qtdFilhos);
@@ -103,16 +103,15 @@ int verificaFolha(No *n)
 {
 
      n->folha = 1;
-    for(int i =0; i < NUM_FILHOS ; i++)
-    {
-        if(n->filhos[i] != NULL)
+
+        if(n->filhos[0] != NULL)
         {
             n->folha = 0;
             return 0;
         }
 
 
-    }
+
 
 
 return 1;
@@ -160,28 +159,70 @@ int *separa(int *inicio,int tam)
 }
 
 
-void split(No *no, No *novoIrmao)
+int split(No *no, No *novoIrmao)
 {
 
     int *meio = separa(no->chaves,no->qtdChaves);
-
+    int j=0;
+    int k=0; //INDICE DOS FILHOS DO NOVO IRMAO
     for(int i = (meio - no->chaves)+1 ; i < no->qtdChaves; i++ )
     {
-        adicionaChave(novoIrmao,no->chaves[i]);
-        no->chaves[i] = VAZIO;
+        adicionaChave(novoIrmao,no->chaves[i]); //PASSA AS CHAVES PRO IRMAO
+        no->chaves[i] = VAZIO; //DECLARA O VALOR COMO VAZIO
+
+        if(no->filhos[i]!=NULL) //PASSA OS FILHOS PRO IRMAO SE TIVER FILHOS
+        {
+            novoIrmao->filhos[k] = no->filhos[i];
+            k++;
+            no->filhos[i] = NULL;
+        }
+        j++;
     }
 
+    if(no->pai != NULL)
+    {
+        novoIrmao->pai = no->pai;
+    }
 
+    no->qtdChaves-=j;
+
+
+int valorMeio = *meio;
+*meio = VAZIO;
+no->qtdChaves--;
+return valorMeio; //RETORNA O VALOR DO MEIO QUE IRA SUBIR PARA O PAI
 }
 
-void inserir(No **raiz, int chave)
+void adicionaFilho(No *pai, No *filho)
+{
+    int i=0;
+    if( pai == NULL)
+    {
+        printf("\nerro em adicionaFIlho, PAI NULL");
+
+    }
+    else if(filho == NULL)
+    {
+        printf("\n erro em adicionaFilho, FILHO NULL");
+    }
+    while(pai->filhos[i] != NULL)
+    {
+        i++;
+    }
+    pai->filhos[i] = filho;
+    filho->pai = pai;
+}
+
+int inserir(No **raiz, int chave)
 {
 
-    if(*raiz)
+    if(!(*raiz))
     {
-
-
-    No *noBusca = busca(*raiz,chave);
+        *raiz = criaNo();
+        adicionaChave(&(*raiz), chave);
+     return 1;
+    }
+        No *noBusca = busca(&(*raiz),chave);
 
         if(noBusca == NULL)
         {
@@ -189,9 +230,6 @@ void inserir(No **raiz, int chave)
         }
         else
         {
-
-
-             ordenaChaves(noBusca->chaves, noBusca->qtdChaves);
 
              for(int i = 0 ; i < noBusca->qtdChaves; i ++)
              {
@@ -208,28 +246,35 @@ void inserir(No **raiz, int chave)
               adicionaChave(noBusca,chave);
 
             }
+            else //NAO TEM ESPACO, PRECISA FAZER SPLIT
+            {
 
-            if(noBusca->qtdChaves > NUM_CHAVES){ //SPLIT
-
-                if(noBusca->pai == NULL) //RAIZ
+                adicionaChave(noBusca,chave); //CHAVE ADICIONADA POIS TEM ESPAÇO PARA OVERFLOW
+                if(noBusca->pai == NULL) //PAI DO NO BUSCADO É NULO PORTANTO É RAIZ
                 {
                     No *novaRaiz = criaNo();
                     No *irmao = criaNo();
 
                     //FUNCAO SPLIT PAASSANDO (noBusca,NoIrmao,PAI OU NULL):
+                   int meio = split(noBusca,irmao);
+                    adicionaChave(novaRaiz,meio);
+
+                    adicionaFilho(novaRaiz,noBusca);
+                    adicionaFilho(novaRaiz,irmao);
+
                 }
+
 
 
             }
 
+
+
         }
-    }
-    else
-    {
-        printf("\nErro raiz nula");
-    }
 
 
+
+return 0;
 }
 
 void printNo(No *no)
@@ -249,18 +294,43 @@ int main()
 {
 
 
-    No *no = criaNo();
-    No *irmao = criaNo();
+    No *novo = malloc(sizeof(No));
+    No *irmaoT = malloc(sizeof(No));
+    int qtdFilhos = NUM_FILHOS;
 
 
-    adicionaChave(no,1);
 
-    adicionaChave(no,2);
+        novo->qtdChaves = 0;
+        novo->pai = NULL;
 
-    adicionaChave(no,3);
+        irmaoT->qtdChaves = 0;
+        irmaoT->pai = NULL;
 
-    split(no,irmao);
+      novo->chaves = malloc(sizeof(int)*(NUM_CHAVES+1)); //NUM DE CHAVES 2*ORDEM + 1 (O +1 É ESPAÇO PRO VALOR OVERFLOW)
+         irmaoT->chaves = malloc(sizeof(int)*(NUM_CHAVES+1));
 
+        novo->filhos = malloc(sizeof(No*)*qtdFilhos);
+        for(int i = 0; i < qtdFilhos ; i ++)
+        {
+            *(novo->filhos + i)  = NULL;
+        }
+         irmaoT->filhos = malloc(sizeof(No*)*qtdFilhos);
+        for(int i = 0; i < qtdFilhos ; i ++)
+        {
+            *(irmaoT->filhos + i)  = NULL;
+        }
+
+
+    novo->filhos[0] =malloc(sizeof(No));
+    novo->filhos[1] =malloc(sizeof(No));
+    novo->filhos[2] =malloc(sizeof(No));
+
+    adicionaChave(novo,1);
+    adicionaChave(novo,23);
+    adicionaChave(novo,4);
+
+
+    split(novo,irmaoT);
 
     return 0;
 }
