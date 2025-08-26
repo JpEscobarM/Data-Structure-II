@@ -5,7 +5,8 @@
 #define NUM_FILHOS (2*ORDEM)+1
 #define VAZIO -99999
 
-typedef struct no{
+typedef struct no
+{
 
     int *chaves;
     int qtdChaves;
@@ -15,14 +16,14 @@ typedef struct no{
 
     int grau;
 
-}No;
+} No;
 
 typedef struct
 {
     No *raiz;
     int grau;
 
-}Arvore;
+} Arvore;
 
 void doxyblock()
 {
@@ -41,7 +42,7 @@ No *criarNo(int folha)
     No *novo = malloc(sizeof(No));
     if(novo == NULL)
     {
-       perror("<noCriar>");
+        perror("<noCriar>");
         exit(EXIT_FAILURE);
     }
 
@@ -94,7 +95,8 @@ Arvore *criarArvore()
  *apaga todos em cascata.
  * @note Certifique-se de que o nó não seja usado após a chamada desta função.
  */
-void apagarNo(No *no){
+void apagarNo(No *no)
+{
 
     if(no == NULL)
     {
@@ -171,9 +173,11 @@ No *buscarEmArvore(Arvore *arv, int chave, int *pos_out)
 *realizado o split
 * @return nenhum.
 */
-void split_filho(No *pai, int j, No *orig) {
+void split_filho(No *pai, int j, No *orig)
+{
 
-    if (orig->qtdChaves != NUM_CHAVES) {
+    if (orig->qtdChaves != NUM_CHAVES)
+    {
         // Retorna pois só vai executar o split quando um nó estiver cheio
         return;
     }
@@ -182,14 +186,17 @@ void split_filho(No *pai, int j, No *orig) {
     // qtdChaves inicia em 0 (de criarNo), e só setamos após cópia
 
     // Copia ORDEM maiores chaves
-    for (int i = 0; i < ORDEM; i++) {
+    for (int i = 0; i < ORDEM; i++)
+    {
         novo->chaves[i] = orig->chaves[i + ORDEM];
     }
     novo->qtdChaves = ORDEM;
 
     // Copia ORDEM+1 filhos (se não folha)
-    if (!orig->folha) {
-        for (int i = 0; i <= ORDEM; i++) {
+    if (!orig->folha)
+    {
+        for (int i = 0; i <= ORDEM; i++)
+        {
             novo->filhos[i] = orig->filhos[i + ORDEM];
             orig->filhos[i + ORDEM] = NULL;
         }
@@ -198,13 +205,15 @@ void split_filho(No *pai, int j, No *orig) {
     orig->qtdChaves = ORDEM;  // orig fica com ORDEM chaves
 
     // Ajusta filhos no pai
-    for (int i = pai->qtdChaves; i >= j + 1; i--) {
+    for (int i = pai->qtdChaves; i >= j + 1; i--)
+    {
         pai->filhos[i + 1] = pai->filhos[i];
     }
     pai->filhos[j + 1] = novo;
 
     // Ajusta chaves no pai
-    for (int i = pai->qtdChaves - 1; i >= j; i--) {
+    for (int i = pai->qtdChaves - 1; i >= j; i--)
+    {
         pai->chaves[i + 1] = pai->chaves[i];
     }
 
@@ -321,7 +330,7 @@ int encontrarPosicao(No *src, int chave)
         index++;
     }
 
-return index;
+    return index;
 }
 
 /**
@@ -373,7 +382,127 @@ int sucessor(No *src, int index)
     return aux->chaves[0];
 }
 
-void fundir_filhos(NoB *x, int idx){}
+/**
+* @brief junta dois filhos, Esquerda e Direita do valor indicado pelo index.
+* @param *src = ponteiro para nó | index= indica a posicao do valor no vetor de chaves.
+*
+* ATENÇÃO: quando ordem =1 a condição de junção nunca é verdade pois condição: P + Q nunca é menor que 2 X ORDEM
+*   sendo P e Q a quantidade de chaves dos dois filhos a serem unidos.
+* @return nenuhm.
+*/
+void fundirFilhos(No *src, int index)
+{
+    if(src == NULL)
+    {
+        printf("\nERRO:<fundirFilhos>nó src NULL<fundirFIlhos>");
+        return;
+    }
+
+    if(index < 0 || index >= src->qtdChaves)
+    {
+        printf("\nERRO:<fundirFilhos>index > qtdChaves de src<fundirFIlhos>");
+        return;
+    }
+
+
+    if(ORDEM < 2)
+    {
+        printf("\nERRO:<fundirFilhos>ordem d < 2 ou seja: cada filho tem \>=1 chave; P+Q < 2d nunca é verdade <fundirFIlhos>");
+        return;
+    }
+
+
+    No *esq = src->filhos[index]; //MENORES QUE A CHAVE NA POSICAO [INDEX]
+    No *dir = src->filhos[index+1];
+
+    if(esq == NULL || dir == NULL)
+    {
+        printf("\nERRO:<fundirFilhos>ponteiro a esquerda ou a direita de index == NULL<fundirFIlhos>");
+        return;
+    }
+
+
+    int p_esq = esq->qtdChaves;
+    int q_dir = dir->qtdChaves;
+
+    if(p_esq + q_dir >= NUM_CHAVES)
+    {
+    printf("\nERRO:<fundirFilhos>P + Q > 2d <fundirFIlhos>");
+        return;
+    }
+
+
+    esq->chaves[p_esq++] = src->chaves[index];
+
+
+
+    for (int j = 0; j < q_dir; ++j)
+    {
+    esq->chaves[p_esq + j] = dir->chaves[j];
+    }
+
+
+
+    if (esq->folha == 0)
+    {
+    for (int j = 0; j <= q_dir; ++j)
+        {
+            esq->filhos[p_esq + j] = dir->filhos[j];
+        }
+    }
+
+
+
+     esq->qtdChaves = p_esq + q_dir; //SOMA AS CHAVES QUE FORAM PASSADAS DA DIREITA
+
+
+
+    for (int j = index; j < src->qtdChaves - 1; ++j)
+    {
+        src->chaves[j] = src->chaves[j + 1];
+    }
+
+
+
+    for (int j = index + 1; j < src->qtdChaves; ++j)
+    {
+        src->filhos[j] = src->filhos[j + 1];
+    }
+
+
+    src->filhos[src->qtdChaves] = NULL;
+    src->qtdChaves--;
+
+
+    free(dir->chaves);
+    free(dir->filhos);
+    free(dir);
+}
+
+void emprestarAnterior(No *src, int index)
+{
+
+    No *irmao = src->filhos[index-1]; //ESQ = P
+    No *filho = src->filhos[index]; //DIR = Q
+
+    if(irmao == NULL)
+    {
+         printf("\nERRO:<emprestarAnterior>no filho com [index-1] == NULL <emprestarAnterior>");
+        return;
+    }
+
+    if(irmao == NULL)
+    {
+         printf("\nERRO:<emprestarAnterior>no filho com [index] == NULL <emprestarAnterior>");
+        return;
+    }
+
+    for(int i  =filho->qtdChaves-1 ; i >= 0 ; i--)
+    {
+        filho->chaves[i+1] = filho->chaves[i];
+    }
+
+}
 
 
 int main()
