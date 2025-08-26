@@ -427,7 +427,7 @@ void fundirFilhos(No *src, int index)
 
     if(p_esq + q_dir >= NUM_CHAVES)
     {
-    printf("\nERRO:<fundirFilhos>P + Q > 2d <fundirFIlhos>");
+        printf("\nERRO:<fundirFilhos>P + Q > 2d <fundirFIlhos>");
         return;
     }
 
@@ -438,14 +438,14 @@ void fundirFilhos(No *src, int index)
 
     for (int j = 0; j < q_dir; ++j)
     {
-    esq->chaves[p_esq + j] = dir->chaves[j];
+        esq->chaves[p_esq + j] = dir->chaves[j];
     }
 
 
 
     if (esq->folha == 0)
     {
-    for (int j = 0; j <= q_dir; ++j)
+        for (int j = 0; j <= q_dir; ++j)
         {
             esq->filhos[p_esq + j] = dir->filhos[j];
         }
@@ -453,7 +453,7 @@ void fundirFilhos(No *src, int index)
 
 
 
-     esq->qtdChaves = p_esq + q_dir; //SOMA AS CHAVES QUE FORAM PASSADAS DA DIREITA
+    esq->qtdChaves = p_esq + q_dir; //SOMA AS CHAVES QUE FORAM PASSADAS DA DIREITA
 
 
 
@@ -479,30 +479,62 @@ void fundirFilhos(No *src, int index)
     free(dir);
 }
 
+
 void emprestarAnterior(No *src, int index)
 {
+    No *irmao = src->filhos[index-1]; // ESQ = P
+    No *filho = src->filhos[index]; // DIR = Q
 
-    No *irmao = src->filhos[index-1]; //ESQ = P
-    No *filho = src->filhos[index]; //DIR = Q
 
-    if(irmao == NULL)
+
+    if (index <= 0 || index > src->qtdChaves)
     {
-         printf("\nERRO:<emprestarAnterior>no filho com [index-1] == NULL <emprestarAnterior>");
-        return;
+        printf("\nERRO:<emprestarAnterior>[index] == NULL <emprestarAnterior>"); return;
+
+
+
+    if (irmao == NULL)
+    {
+        printf("\nERRO:<emprestarAnterior>no filho com [index-1] == NULL <emprestarAnterior>"); return;
     }
 
-    if(irmao == NULL)
+
+    if (filho == NULL)
     {
-         printf("\nERRO:<emprestarAnterior>no filho com [index] == NULL <emprestarAnterior>");
-        return;
+       printf("\nERRO:<emprestarAnterior>no filho com [index] == NULL <emprestarAnterior>"); return;
     }
 
-    for(int i  =filho->qtdChaves-1 ; i >= 0 ; i--)
+
+    for (int i = filho->qtdChaves - 1; i >= 0; i--)
     {
-        filho->chaves[i+1] = filho->chaves[i];
+        filho->chaves[i + 1] = filho->chaves[i];
     }
 
+
+    if (filho->folha == 0) // TEM FILHOS
+    {
+        for (int i = filho->qtdChaves; i >= 0; i--)
+        {
+            filho->filhos[i + 1] = filho->filhos[i];
+        }
+    }
+
+
+    filho->chaves[0] = src->chaves[index - 1];
+    if (filho->folha == 0)
+    {
+        filho->filhos[0] = irmao->filhos[irmao->qtdChaves];
+        irmao->filhos[irmao->qtdChaves] = NULL;
+    }
+
+
+    src->chaves[index - 1] = irmao->chaves[irmao->qtdChaves - 1];
+
+
+    filho->qtdChaves += 1;
+    irmao->qtdChaves -= 1;
 }
+
 
 
 int main()
