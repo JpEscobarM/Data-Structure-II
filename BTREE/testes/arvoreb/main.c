@@ -165,6 +165,10 @@ int split(No *no, No *novoIrmao)
     int *meio = separa(no->chaves,no->qtdChaves);
     int j=0;
     int k=0; //INDICE DOS FILHOS DO NOVO IRMAO
+    novoIrmao->filhos[k] = no->filhos[meio - no->chaves];
+    no->filhos[meio - no->chaves] = NULL;
+    k++;
+
     for(int i = (meio - no->chaves)+1 ; i < no->qtdChaves; i++ )
     {
         adicionaChave(novoIrmao,no->chaves[i]); //PASSA AS CHAVES PRO IRMAO

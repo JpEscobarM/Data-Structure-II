@@ -1,0 +1,384 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define ORDEM 1
+#define NUM_CHAVES 2*ORDEM
+#define NUM_FILHOS (2*ORDEM)+1
+#define VAZIO -99999
+
+typedef struct no{
+
+    int *chaves;
+    int qtdChaves;
+    int folha;
+
+    struct no **filhos;
+
+    int grau;
+
+}No;
+
+typedef struct
+{
+    No *raiz;
+    int grau;
+
+}Arvore;
+
+void doxyblock()
+{
+
+}
+
+//FUNÇÕES DE INSERÇÃOI INICIAM AQUI//
+
+/**
+ * @brief aloca dinamicamente um No e inicializa variaveis.
+ * @param INT 1 = folha | 0 = não folha.
+ * @return ponteiro para No.
+ */
+No *criarNo(int folha)
+{
+    No *novo = malloc(sizeof(No));
+    if(novo == NULL)
+    {
+       perror("<noCriar>");
+        exit(EXIT_FAILURE);
+    }
+
+    novo->grau = NUM_FILHOS;
+    novo->qtdChaves =0;
+    novo->folha = folha;
+    novo->chaves = malloc(sizeof(int)*NUM_CHAVES);
+    novo->filhos = malloc(sizeof(No*)*NUM_FILHOS);
+
+    if( novo->chaves == NULL || novo->filhos == NULL)
+    {
+        perror("<noCriar>");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i =0 ; i < NUM_FILHOS; i ++ )
+    {
+        novo->filhos[i] = NULL;
+    }
+    return novo;
+}
+
+/**
+ * @brief cria uma nova árvore.
+ * @param nenhum.
+ * @return ponteiro para nova Arvore.
+ */
+Arvore *criarArvore()
+{
+    Arvore *novaArvore = malloc(sizeof(Arvore));
+
+    if(novaArvore == NULL)
+    {
+        perror("<criarArvore>");
+        exit(EXIT_FAILURE);
+
+    }
+    novaArvore->grau = NUM_FILHOS;
+    novaArvore->raiz = criarNo(1);
+    return novaArvore;
+}
+
+
+/**
+ * @brief Libera a memória de um nó e seus filhos em uma árvore.
+ * @param no Ponteiro para o nó a ser apagado.
+ * @return Nenhum valor retornado.
+ *
+ * Esta função libera recursivamente a memória alocada para um nó e seus filhos.
+ *apaga todos em cascata.
+ * @note Certifique-se de que o nó não seja usado após a chamada desta função.
+ */
+void apagarNo(No *no){
+
+    if(no == NULL)
+    {
+        return;
+    }
+    if(!no->folha)
+    {
+        for(int i = 0 ; i < no->qtdChaves; i ++)
+        {
+            apagarNo(no->filhos[i]);
+        }
+    }
+    free(no->chaves);
+    free(no->filhos);
+    free(no);
+}
+
+/**
+* @brief apaga a raiz da arvore e seus Nó's em cascata.
+* @param ponteiro para tipo Arvore que será apagada.
+* @return nenhum.
+*/
+void apagarArvore(Arvore *arv)
+{
+    if(arv == NULL)
+    {
+        return;
+    }
+    apagarNo(arv->raiz);
+    free(arv);
+}
+
+/**
+* @brief função recursiva que procura uma chave entre os nó's da arvore.
+* @param No src = Nó a ser procurado | int chave = chave procurada | int pos_out = indice da chave
+* @return ponteiro para Nó onde achou a chave OU NULL se não achou.
+*/
+No *buscarNo(No *src, int chave, int *pos_out)
+{
+    int i = 0;
+
+    while(i < src->qtdChaves && chave > src->chaves[i])
+    {
+        i++;
+    }
+    //1 - SE A CHAVE ESTA NO INDICE i DO NÓ ATUAL ENTÃO RETORNA O MESMO.
+    if(i < src->qtdChaves && chave == src->chaves[i])
+    {
+        if(pos_out) *pos_out = i; //INDICA A POSICAO CORRETA DA CHAVE NO NÓ.
+        return src;
+    }
+
+    //2- SE A O NÓ ATUAL É FOLHA E NÃO ACHOU A CHAVE RETORNA NULL.
+    if(src->folha) return NULL;
+
+    //CONTINUA PROCURANDO
+    return buscarNo(src->filhos[i], chave, pos_out);
+}
+
+/**
+* @brief buscar chave na arvore.
+* @param No src = Nó a ser procurado | int chave = chave procurada | int pos_out = indice da chave
+* @return ponteiro para Nó onde achou a chave OU NULL se não achou.
+*/
+No *buscarEmArvore(Arvore *arv, int chave, int *pos_out)
+{
+
+    return (arv && arv->raiz) ? buscarNo(arv->raiz,chave,pos_out) : NULL;
+}
+
+/**
+* @brief realiza um split quando o nó chega a capacidade maxima de chaves.
+* @param No *pai = pai do nó orig | int j = posicao de *orig em *pai | No *orig = nó que será
+*realizado o split
+* @return nenhum.
+*/
+void split_filho(No *pai, int j, No *orig) {
+
+    if (orig->qtdChaves != NUM_CHAVES) {
+        // Retorna pois só vai executar o split quando um nó estiver cheio
+        return;
+    }
+
+    No *novo = criarNo(orig->folha);
+    // qtdChaves inicia em 0 (de criarNo), e só setamos após cópia
+
+    // Copia ORDEM maiores chaves
+    for (int i = 0; i < ORDEM; i++) {
+        novo->chaves[i] = orig->chaves[i + ORDEM];
+    }
+    novo->qtdChaves = ORDEM;
+
+    // Copia ORDEM+1 filhos (se não folha)
+    if (!orig->folha) {
+        for (int i = 0; i <= ORDEM; i++) {
+            novo->filhos[i] = orig->filhos[i + ORDEM];
+            orig->filhos[i + ORDEM] = NULL;
+        }
+    }
+
+    orig->qtdChaves = ORDEM;  // orig fica com ORDEM chaves
+
+    // Ajusta filhos no pai
+    for (int i = pai->qtdChaves; i >= j + 1; i--) {
+        pai->filhos[i + 1] = pai->filhos[i];
+    }
+    pai->filhos[j + 1] = novo;
+
+    // Ajusta chaves no pai
+    for (int i = pai->qtdChaves - 1; i >= j; i--) {
+        pai->chaves[i + 1] = pai->chaves[i];
+    }
+
+    // Insere mediana (posição ORDEM)
+    pai->chaves[j] = orig->chaves[ORDEM];
+    pai->qtdChaves += 1;
+}
+
+
+/**
+ * @brief Insere uma chave em um nó não cheio da Árvore B
+ *
+ * Se for folha, insere direto na posição correta.
+ * Se não for folha, desce para o filho adequado.
+ * Faz split do filho se ele estiver cheio.
+ * Evita inserir chaves duplicadas.
+ *
+ * @param src   Nó atual da Árvore B
+ * @param chave Valor a ser inserido
+ */
+
+void inserirNaoCheio(No *src, int chave)
+{
+    int i = src->qtdChaves -1; //INDICE DA ULTIMA CHAVE INSERIDA
+
+    if(src->folha)
+    {
+        while( i >= 0 && src->chaves[i] > chave)
+        {
+            //CASO A CHAVE TENHA UM VALOR MENOR DO QUE O VALOR ATUAL
+            //PASSA O VALOR PRO LADO
+            src->chaves[i + 1] = src->chaves[i];
+            i--;
+        }
+        if( i >= 0 && src->chaves[i] == chave) //EVITAR DUPLICATAS
+        {
+            return;
+        }
+        src->chaves[i+1]= chave;
+        src->qtdChaves++;
+    }
+    else
+    {
+        while(i>= 0 && src->chaves[i]> chave)
+        {
+            i--;
+        }
+        i++;
+        if((i< src->qtdChaves && src->chaves[i] == chave) || (i-1 >= 0 && src->chaves[i-1] == chave))
+        {
+            return;
+        }
+        if(src->filhos[i]->qtdChaves == NUM_CHAVES)
+        {
+            split_filho(src,i,src->filhos[i]);
+            if(chave > src->chaves[i])
+            {
+                i++;
+            }
+            else if(chave == src->chaves[i])
+            {
+                return;
+            }
+        }
+        inserirNaoCheio(src->filhos[i],chave);
+    }
+}
+
+
+/**
+* @brief insere uma chave na arvore.
+* @param *arv = ponteiro para arvore | chave = valor que sera inserido
+* @return nenhum.
+*/
+void inserirNaArvore(Arvore *arv, int chave)
+{
+    No *raiz = arv->raiz; // APONTA PRO NO ATUAL NA RAIZ
+    if(raiz->qtdChaves == NUM_CHAVES)
+    {
+        No *novaRaiz = criarNo(0);
+
+        arv->raiz = novaRaiz;
+
+        novaRaiz->filhos[0] =raiz; //RAIZ VIRA FILHO DA NOVA RAIZ
+
+        split_filho(novaRaiz,0,raiz);
+
+        int i = (chave > novaRaiz->chaves[0]) ? 1 : 0;
+
+        if (chave == novaRaiz->chaves[0]) return;
+        inserirNaoCheio(novaRaiz->filhos[i], chave);
+    }
+    else
+    {
+        inserirNaoCheio(raiz,chave);
+    }
+
+}
+//FUNÇÕES DE INSERÇÃO TERMINAM AQUI//
+
+
+//INICIO FUNÇÕES DE REMOÇÃO
+
+/**
+* @brief acha a posicao correta da chave no vetor de chaves do nó.
+* @param *src = ponteiro para nó | chave = chave a ser comparada.
+* @return int index.
+*/
+int encontrarPosicao(No *src, int chave)
+{
+    int index = 0;
+    while(index < src->qtdChaves && src->chaves[index] < chave)
+    {
+        index++;
+    }
+
+return index;
+}
+
+/**
+* @brief desloca os No's a direita do index, para a esquerda, cobrindo a posicao apagada.
+* @param *src = ponteiro para nó | index= indica a posicao do valor a ser apagado.
+*
+* Importante ressaltar que deve ser usado somente em folhas.
+*
+* @return nenhum.
+*/
+void removerEmFolha(No *src, int index)
+{
+    for(int i = index +1 ; i< src->qtdChaves; ++i)
+    {
+        src->chaves[i-1] = src->chaves[i];
+
+    }
+    src->qtdChaves--;
+}
+
+
+/**
+* @brief retorna a maior chave da subarvore a esquerda.
+* @param *src = ponteiro para nó | index= indica a posicao do valor a ser apagado.
+*
+* utilizado quando vamos remover uma chave de um nó nao folha.
+*
+* @return int.
+*/
+int predecessor(No *src, int index)
+{
+    No *aux = src->filhos[index];
+    while(!aux->folha) aux = aux->filhos[aux->qtdChaves];
+    return aux->chaves[aux->qtdChaves-1];
+}
+
+/**
+* @brief retorna a menor chave da subarvore a direita do index indicado.
+* @param *src = ponteiro para nó | index= indica a posicao do valor a ser apagado.
+*
+* utilizado quando vamos remover uma chave de um nó nao folha.
+*
+* @return int.
+*/
+int sucessor(No *src, int index)
+{
+    No *aux = src->filhos[index];
+    while(!aux->folha) aux = aux->filhos[0];
+    return aux->chaves[0];
+}
+
+void fundir_filhos(NoB *x, int idx){}
+
+
+int main()
+{
+
+
+    return 0;
+}

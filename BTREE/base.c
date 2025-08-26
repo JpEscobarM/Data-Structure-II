@@ -1,12 +1,4 @@
-/*
- * �rvore B (B-Tree) em C � vers�o est�vel (CLRS)
- * - Grau m�nimo t (t >= 2).
- * - M�x. chaves por n�: 2*t - 1; m�n. (n�o-raiz): t - 1.
- * - Opera��es: criar, buscar, inserir, remover, travessia, imprimir, destruir.
- * - Chaves int, sem duplicatas (duplicata � ignorada).
- *
- * Compilar:  gcc -std=c99 -O2 -Wall -Wextra -pedantic btree_ptbr.c -o btree
- */
+
 
 #include <stdio.h>
 #include <stdlib.h>
