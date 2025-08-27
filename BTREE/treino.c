@@ -25,6 +25,14 @@ typedef struct
 
 } Arvore;
 
+
+// ---PROTOTIPOS---
+void removerEmInterno(No *src,int index);
+void removerChaveNo(Arvore *arv, No *src, int chave);
+
+
+
+
 void doxyblock()
 {
 
@@ -480,7 +488,15 @@ void fundirFilhos(No *src, int index)
 }
 
 
-void emprestarAnterior(No *src, int index)
+
+
+
+/**
+ *   @brief passa a chave do filho a esquerda para o pai, e do pai para o filho a direita.
+ *   @param *src = ponteiro para nó | index= indica a posicao do valor no vetor de chaves.
+  *  @return nenhum.
+*/
+void emprestarDoAnterior(No *src, int index)
 {
     No *irmao = src->filhos[index-1]; // ESQ = P
     No *filho = src->filhos[index]; // DIR = Q
@@ -491,7 +507,7 @@ void emprestarAnterior(No *src, int index)
     {
         printf("\nERRO:<emprestarAnterior>[index] == NULL <emprestarAnterior>"); return;
 
-
+    }
 
     if (irmao == NULL)
     {
@@ -535,6 +551,115 @@ void emprestarAnterior(No *src, int index)
     irmao->qtdChaves -= 1;
 }
 
+
+/**
+ *   @brief passa a chave do filho a direita para o pai, e do pai para o filho a esquerda.
+ *   @param *src = ponteiro para nó | index= indica a posicao do valor no vetor de chaves.
+  *  @return nenhum.
+*/
+void emprestaDoProximo(No *src, int index)
+{
+
+      No *irmao = src->filhos[index+1]; // DIR
+    No *filho = src->filhos[index]; // ESQ
+
+
+
+    if (index < 0 || index >= src->qtdChaves)
+    {
+        printf("\nERRO:<emprestaDoProximo>[index] == NULL <emprestaDoProximo>"); return;
+    }
+    if (irmao == NULL)
+    {
+        printf("\nERRO:<emprestaDoProximo>no filho com [index+1] == NULL <emprestaDoProximo>"); return;
+    }
+
+
+    if (filho == NULL)
+    {
+       printf("\nERRO:<emprestaDoProximo>no filho com [index] == NULL <emprestaDoProximo>"); return;
+    }
+
+    if (irmao->qtdChaves <= ORDEM) { printf("irmão a direita não pode emprestar"); return; }
+    if (filho->qtdChaves >= NUM_CHAVES) {printf("filho atual cheio"); return; }
+
+
+
+
+    filho->chaves[filho->qtdChaves] = src->chaves[index];
+
+    if (filho->folha == 0)
+    {
+        filho->filhos[filho->qtdChaves+1] = irmao->filhos[0];
+
+    }
+
+    src->chaves[index] = irmao->chaves[0];
+
+    for(int i = 1 ;  i<irmao->qtdChaves ; i++) //SHIFT PARA ESQUERDA
+    {
+        irmao->chaves[i-1] = irmao->chaves[i];
+    }
+
+    if(irmao->folha == 0 )
+    {
+        for(int i = 1 ; i<= irmao->qtdChaves ; i++) //SHIFT PARA ESQUERDA
+        {
+            irmao->filhos[i-1] = irmao->filhos[i];
+        }
+    }
+
+    filho->qtdChaves++;
+    irmao->qtdChaves--;
+
+}
+
+void removerEmInterno(No *src, int index)
+{
+    if(src == NULL)
+    {
+          printf("\nERRO:<removerEmInterno>Nó passado por parametro == NULL <removerEmInterno>"); return;
+    }
+
+
+    if(index < 0 || index>= src->qtdChaves)
+    {
+          printf("\nERRO:<removerEmInterno> index < 0 ou index>= src->qtdChaves <removerEmInterno>"); return;
+    }
+
+
+    int chave = src->chaves[index];
+
+    if(src->filhos[index]->qtdChaves >= ORDEM+1)
+    {
+        int pred = predecessor(src,index);
+        src->chaves[index] = pred;
+        removerChaveNo(NULL, src->filhos[index],pred);
+    }
+    else if
+    {
+
+    }
+
+}
+
+
+void removerChaveNo(Arvore *arv, No *src, int chave)
+{
+    int index = encontrarPosicao(src,chave);
+
+    if(index < src->qtdChaves && src->chaves[index] == chave)
+    {
+        if(src->folha)
+        {
+            removerEmFolha(src,index);
+        }
+        else
+        {
+            removerEmInterno()
+        }
+    }
+}
 
 
 int main()
