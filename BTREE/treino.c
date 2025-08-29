@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ORDEM 2
+#define ORDEM 1
 #define NUM_CHAVES 2*ORDEM
 #define NUM_FILHOS (2*ORDEM)+1
 #define VAZIO -99999
@@ -38,11 +38,11 @@ void doxyblock()
 
 }
 
-//FUN«’ES DE INSER«√OI INICIAM AQUI//
+//FUN√á√ïES DE INSER√á√ÉOI INICIAM AQUI//
 
 /**
  * @brief aloca dinamicamente um No e inicializa variaveis.
- * @param INT 1 = folha | 0 = n„o folha.
+ * @param INT 1 = folha | 0 = n√£o folha.
  * @return ponteiro para No.
  */
 No *criarNo(int folha)
@@ -74,7 +74,7 @@ No *criarNo(int folha)
 }
 
 /**
- * @brief cria uma nova ·rvore.
+ * @brief cria uma nova √°rvore.
  * @param nenhum.
  * @return ponteiro para nova Arvore.
  */
@@ -95,13 +95,13 @@ Arvore *criarArvore()
 
 
 /**
- * @brief Libera a memÛria de um nÛ e seus filhos em uma ·rvore.
- * @param no Ponteiro para o nÛ a ser apagado.
+ * @brief Libera a mem√≥ria de um n√≥ e seus filhos em uma √°rvore.
+ * @param no Ponteiro para o n√≥ a ser apagado.
  * @return Nenhum valor retornado.
  *
- * Esta funÁ„o libera recursivamente a memÛria alocada para um nÛ e seus filhos.
+ * Esta fun√ß√£o libera recursivamente a mem√≥ria alocada para um n√≥ e seus filhos.
  *apaga todos em cascata.
- * @note Certifique-se de que o nÛ n„o seja usado apÛs a chamada desta funÁ„o.
+ * @note Certifique-se de que o n√≥ n√£o seja usado ap√≥s a chamada desta fun√ß√£o.
  */
 void apagarNo(No *no)
 {
@@ -123,8 +123,8 @@ void apagarNo(No *no)
 }
 
 /**
-* @brief apaga a raiz da arvore e seus NÛ's em cascata.
-* @param ponteiro para tipo Arvore que ser· apagada.
+* @brief apaga a raiz da arvore e seus N√≥'s em cascata.
+* @param ponteiro para tipo Arvore que ser√° apagada.
 * @return nenhum.
 */
 void apagarArvore(Arvore *arv)
@@ -138,9 +138,9 @@ void apagarArvore(Arvore *arv)
 }
 
 /**
-* @brief funÁ„o recursiva que procura uma chave entre os nÛ's da arvore.
-* @param No src = NÛ a ser procurado | int chave = chave procurada | int pos_out = indice da chave
-* @return ponteiro para NÛ onde achou a chave OU NULL se n„o achou.
+* @brief fun√ß√£o recursiva que procura uma chave entre os n√≥'s da arvore.
+* @param No src = N√≥ a ser procurado | int chave = chave procurada | int pos_out = indice da chave
+* @return ponteiro para N√≥ onde achou a chave OU NULL se n√£o achou.
 */
 No *buscarNo(No *src, int chave, int *pos_out)
 {
@@ -150,14 +150,14 @@ No *buscarNo(No *src, int chave, int *pos_out)
     {
         i++;
     }
-    //1 - SE A CHAVE ESTA NO INDICE i DO N” ATUAL ENT√O RETORNA O MESMO.
+    //1 - SE A CHAVE ESTA NO INDICE i DO N√ì ATUAL ENT√ÉO RETORNA O MESMO.
     if(i < src->qtdChaves && chave == src->chaves[i])
     {
-        if(pos_out) *pos_out = i; //INDICA A POSICAO CORRETA DA CHAVE NO N”.
+        if(pos_out) *pos_out = i; //INDICA A POSICAO CORRETA DA CHAVE NO N√ì.
         return src;
     }
 
-    //2- SE A O N” ATUAL … FOLHA E N√O ACHOU A CHAVE RETORNA NULL.
+    //2- SE A O N√ì ATUAL √â FOLHA E N√ÉO ACHOU A CHAVE RETORNA NULL.
     if(src->folha) return NULL;
 
     //CONTINUA PROCURANDO
@@ -166,8 +166,8 @@ No *buscarNo(No *src, int chave, int *pos_out)
 
 /**
 * @brief buscar chave na arvore.
-* @param No src = NÛ a ser procurado | int chave = chave procurada | int pos_out = indice da chave
-* @return ponteiro para NÛ onde achou a chave OU NULL se n„o achou.
+* @param No src = N√≥ a ser procurado | int chave = chave procurada | int pos_out = indice da chave
+* @return ponteiro para N√≥ onde achou a chave OU NULL se n√£o achou.
 */
 No *buscarEmArvore(Arvore *arv, int chave, int *pos_out)
 {
@@ -176,8 +176,8 @@ No *buscarEmArvore(Arvore *arv, int chave, int *pos_out)
 }
 
 /**
-* @brief realiza um split quando o nÛ chega a capacidade maxima de chaves.
-* @param No *pai = pai do nÛ orig | int j = posicao de *orig em *pai | No *orig = nÛ que ser·
+* @brief realiza um split quando o n√≥ chega a capacidade maxima de chaves.
+* @param No *pai = pai do n√≥ orig | int j = posicao de *orig em *pai | No *orig = n√≥ que ser√°
 *realizado o split
 * @return nenhum.
 */
@@ -186,12 +186,12 @@ void split_filho(No *pai, int j, No *orig)
 
     if (orig->qtdChaves != NUM_CHAVES)
     {
-        // Retorna pois sÛ vai executar o split quando um nÛ estiver cheio
+        // Retorna pois s√≥ vai executar o split quando um n√≥ estiver cheio
         return;
     }
 
     No *novo = criarNo(orig->folha);
-    // qtdChaves inicia em 0 (de criarNo), e sÛ setamos apÛs cÛpia
+    // qtdChaves inicia em 0 (de criarNo), e s√≥ setamos ap√≥s c√≥pia
 
     // Copia ORDEM maiores chaves
     for (int i = 0; i < ORDEM; i++)
@@ -200,7 +200,7 @@ void split_filho(No *pai, int j, No *orig)
     }
     novo->qtdChaves = ORDEM;
 
-    // Copia ORDEM+1 filhos (se n„o folha)
+    // Copia ORDEM+1 filhos (se n√£o folha)
     if (!orig->folha)
     {
         for (int i = 0; i <= ORDEM; i++)
@@ -228,21 +228,21 @@ void split_filho(No *pai, int j, No *orig)
         pai->chaves[i + 1] = pai->chaves[i];
     }
 
-    // Insere mediana (posiÁ„o ORDEM)
+    // Insere mediana (posi√ß√£o ORDEM)
     pai->chaves[j] = orig->chaves[ORDEM];
     pai->qtdChaves += 1;
 }
 
 
 /**
- * @brief Insere uma chave em um nÛ n„o cheio da ¡rvore B
+ * @brief Insere uma chave em um n√≥ n√£o cheio da √Årvore B
  *
- * Se for folha, insere direto na posiÁ„o correta.
- * Se n„o for folha, desce para o filho adequado.
+ * Se for folha, insere direto na posi√ß√£o correta.
+ * Se n√£o for folha, desce para o filho adequado.
  * Faz split do filho se ele estiver cheio.
  * Evita inserir chaves duplicadas.
  *
- * @param src   NÛ atual da ¡rvore B
+ * @param src   N√≥ atual da √Årvore B
  * @param chave Valor a ser inserido
  */
 
@@ -323,14 +323,14 @@ void inserirNaArvore(Arvore *arv, int chave)
     }
 
 }
-//FUN«’ES DE INSER«√O TERMINAM AQUI//
+//FUN√á√ïES DE INSER√á√ÉO TERMINAM AQUI//
 
 
-//INICIO FUN«’ES DE REMO«√O
+//INICIO FUN√á√ïES DE REMO√á√ÉO
 
 /**
-* @brief acha a posicao correta da chave no vetor de chaves do nÛ.
-* @param *src = ponteiro para nÛ | chave = chave a ser comparada.
+* @brief acha a posicao correta da chave no vetor de chaves do n√≥.
+* @param *src = ponteiro para n√≥ | chave = chave a ser comparada.
 * @return int index.
 */
 int encontrarPosicao(No *src, int chave)
@@ -346,7 +346,7 @@ int encontrarPosicao(No *src, int chave)
 
 /**
 * @brief desloca os No's a direita do index, para a esquerda, cobrindo a posicao apagada.
-* @param *src = ponteiro para nÛ | index= indica a posicao do valor a ser apagado.
+* @param *src = ponteiro para n√≥ | index= indica a posicao do valor a ser apagado.
 *
 * Importante ressaltar que deve ser usado somente em folhas.
 *
@@ -365,9 +365,9 @@ void removerEmFolha(No *src, int index)
 
 /**
 * @brief retorna a maior chave da subarvore a esquerda.
-* @param *src = ponteiro para nÛ | index= indica a posicao do valor a ser apagado.
+* @param *src = ponteiro para n√≥ | index= indica a posicao do valor a ser apagado.
 *
-* utilizado quando vamos remover uma chave de um nÛ nao folha.
+* utilizado quando vamos remover uma chave de um n√≥ nao folha.
 *
 * @return int.
 */
@@ -380,9 +380,9 @@ int predecessor(No *src, int index)
 
 /**
 * @brief retorna a menor chave da subarvore a direita do index indicado.
-* @param *src = ponteiro para nÛ | index= indica a posicao do valor a ser apagado.
+* @param *src = ponteiro para n√≥ | index= indica a posicao do valor a ser apagado.
 *
-* utilizado quando vamos remover uma chave de um nÛ nao folha.
+* utilizado quando vamos remover uma chave de um n√≥ nao folha.
 *
 * @return int.
 */
@@ -395,9 +395,9 @@ int sucessor(No *src, int index)
 
 /**
 * @brief junta dois filhos, Esquerda e Direita do valor indicado pelo index.
-* @param *src = ponteiro para nÛ | index= indica a posicao do valor no vetor de chaves.
+* @param *src = ponteiro para n√≥ | index= indica a posicao do valor no vetor de chaves.
 *
-* ATEN«√O: quando ordem =1 a condiÁ„o de junÁ„o nunca È verdade pois condiÁ„o: P + Q nunca È menor que 2 X ORDEM
+* ATEN√á√ÉO: quando ordem =1 a condi√ß√£o de jun√ß√£o nunca √© verdade pois condi√ß√£o: P + Q nunca √© menor que 2 X ORDEM
 *   sendo P e Q a quantidade de chaves dos dois filhos a serem unidos.
 * @return nenuhm.
 */
@@ -405,7 +405,7 @@ void fundirFilhos(No *src, int index)
 {
     if(src == NULL)
     {
-        printf("\nERRO:<fundirFilhos>nÛ src NULL<fundirFIlhos>");
+        printf("\nERRO:<fundirFilhos>n√≥ src NULL<fundirFIlhos>");
         return;
     }
 
@@ -418,7 +418,7 @@ void fundirFilhos(No *src, int index)
 
     if(ORDEM < 2)
     {
-        printf("\nERRO:<fundirFilhos>ordem d < 2 ou seja: cada filho tem \>=1 chave; P+Q < 2d nunca È verdade <fundirFIlhos>");
+        printf("\nERRO:<fundirFilhos>ordem d < 2 ou seja: cada filho tem \>=1 chave; P+Q < 2d nunca √© verdade <fundirFIlhos>");
         return;
     }
 
@@ -496,7 +496,7 @@ void fundirFilhos(No *src, int index)
 
 /**
  *   @brief passa a chave do filho a esquerda para o pai, e do pai para o filho a direita.
- *   @param *src = ponteiro para nÛ | index= indica a posicao do valor no vetor de chaves.
+ *   @param *src = ponteiro para n√≥ | index= indica a posicao do valor no vetor de chaves.
   *  @return nenhum.
 */
 void emprestarDoAnterior(No *src, int index)
@@ -557,7 +557,7 @@ void emprestarDoAnterior(No *src, int index)
 
 /**
  *   @brief passa a chave do filho a direita para o pai, e do pai para o filho a esquerda.
- *   @param *src = ponteiro para nÛ | index= indica a posicao do valor no vetor de chaves.
+ *   @param *src = ponteiro para n√≥ | index= indica a posicao do valor no vetor de chaves.
   *  @return nenhum.
 */
 void emprestaDoProximo(No *src, int index)
@@ -583,7 +583,7 @@ void emprestaDoProximo(No *src, int index)
        printf("\nERRO:<emprestaDoProximo>no filho com [index] == NULL <emprestaDoProximo>"); return;
     }
 
-    if (irmao->qtdChaves <= ORDEM) { printf("irm„o a direita n„o pode emprestar"); return; }
+    if (irmao->qtdChaves <= ORDEM) { printf("irm√£o a direita n√£o pode emprestar"); return; }
     if (filho->qtdChaves >= NUM_CHAVES) {printf("filho atual cheio"); return; }
 
 
@@ -617,6 +617,12 @@ void emprestaDoProximo(No *src, int index)
 
 }
 
+/**
+ * @brief Reequilibra o filho src->filhos[index] ap√≥s remo√ß√£o.
+ * Tenta emprestar de irm√£os (‚â• ORDEM+1) ou fundir com vizinho para manter ‚â• ORDEM chaves.
+ * @param src   N√≥ pai.
+ * @param index √çndice do filho a completar.
+ */
 void completarFilho(No *src, int index)
 {
     if(index!= 0 && src->filhos[index-1]->qtdChaves >= ORDEM+1)
@@ -641,12 +647,18 @@ void completarFilho(No *src, int index)
 
 }
 
-
+/**
+ * @brief Remove a chave de um n√≥ interno em src->chaves[index].
+ * Usa predecessor (filho esquerdo) ou sucessor (filho direito) se puder emprestar (‚â• ORDEM+1);
+ * sen√£o, funde os filhos adjacentes e remove no n√≥ resultante, preservando as invariantes.
+ * @param src   N√≥ interno (pai).
+ * @param index √çndice da chave a remover em src.
+ */
 void removerEmInterno(No *src, int index)
 {
     if(src == NULL)
     {
-          printf("\nERRO:<removerEmInterno>NÛ passado por parametro == NULL <removerEmInterno>"); return;
+          printf("\nERRO:<removerEmInterno>N√≥ passado por parametro == NULL <removerEmInterno>"); return;
     }
 
 
@@ -682,11 +694,20 @@ void removerEmInterno(No *src, int index)
 }
 
 
+/**
+ * @brief Remove a chave em uma √Årvore B iniciando no n√≥ src.
+ * Busca a posi√ß√£o; se a chave estiver no n√≥, remove em folha ou interno.
+ * Caso contr√°rio, desce ao filho correto, reequilibrando com completarFilho()
+ * quando o filho tem exatamente ORDEM chaves.
+ * @param arv   √Årvore (usada para ajustes de raiz, se necess√°rio).
+ * @param src   N√≥ onde a busca/remo√ß√£o come√ßa.
+ * @param chave Chave a remover.
+ */
 void removerChaveNo(Arvore *arv, No *src, int chave)
 {
     int index = encontrarPosicao(src,chave);
 
-    if(index < src->qtdChaves && src->chaves[index] == chave) //SE A CHAVE J¡ EST¡ NO N”
+    if(index < src->qtdChaves && src->chaves[index] == chave) //SE A CHAVE J√Å EST√Å NO N√ì
     {
         if(src->folha)
         {
@@ -722,7 +743,13 @@ void removerChaveNo(Arvore *arv, No *src, int chave)
     }
 }
 
-
+/**
+ * @brief Remove a chave da √Årvore B e ajusta a raiz se necess√°rio.
+ * Chama removerChaveNo(); se a raiz ficar com 0 chaves, zera a √°rvore (se folha)
+ * ou promove o filho 0 como nova raiz e libera a antiga.
+ * @param arv   √Årvore.
+ * @param chave Chave a remover.
+ */
 void removerArvore(Arvore *arv, int chave)
 {
     if(arv == NULL || arv->raiz == NULL)
@@ -747,7 +774,7 @@ void removerArvore(Arvore *arv, int chave)
         else
         {
             arv->raiz = src->filhos[0];
-            antiga->filhos[0] == NULL;
+            antiga->filhos[0] = NULL;
             apagarNo(antiga);
         }
 
@@ -757,127 +784,6 @@ void removerArvore(Arvore *arv, int chave)
 
 
 
-static void _printKeys(const No *n) {
-    printf("[");
-    for (int i = 0; i < n->qtdChaves; i++) {
-        printf("%d", n->chaves[i]);
-        if (i < n->qtdChaves - 1) printf(" ");
-    }
-    printf("]");
-}
-
-static void _imprimirEmOrdemNo(No *n) {
-    if (!n) return;
-
-    for (int i = 0; i < n->qtdChaves; i++) {
-        if (!n->folha && n->filhos[i]) {
-            _imprimirEmOrdemNo(n->filhos[i]);
-        }
-        printf("%d ", n->chaves[i]);
-    }
-    if (!n->folha && n->filhos[n->qtdChaves]) {
-        _imprimirEmOrdemNo(n->filhos[n->qtdChaves]);
-    }
-}
-
-static void _indent(int nivel) {
-    for (int i = 0; i < nivel; i++) printf("  ");
-}
-
-static void _imprimirEstruturadoNo(No *n, int nivel) {
-    if (!n) return;
-
-    _indent(nivel);
-    printf("nivel %d %s ", nivel, n->folha ? "(folha)" : "(interno)");
-    _printKeys(n);
-    printf("\n");
-
-    if (!n->folha && n->filhos) {
-        /* Em uma B-Tree com m chaves, h· atÈ m+1 filhos relevantes */
-        for (int i = 0; i <= n->qtdChaves; i++) {
-            if (n->filhos[i]) {
-                _imprimirEstruturadoNo(n->filhos[i], nivel + 1);
-            }
-        }
-    }
-}
-
-/* ---------- APIs p˙blicas ---------- */
-
-/* Em ordem (crescente) */
-void imprimirEmOrdem(Arvore *arv) {
-    if (!arv || !arv->raiz || arv->raiz->qtdChaves == 0) {
-        printf("(arvore vazia)\n");
-        return;
-    }
-    _imprimirEmOrdemNo(arv->raiz);
-    printf("\n");
-}
-
-/* Por nivel (BFS) */
-void imprimirPorNivel(Arvore *arv) {
-    if (!arv || !arv->raiz || arv->raiz->qtdChaves == 0) {
-        printf("(arvore vazia)\n");
-        return;
-    }
-
-    /* Fila simples din‚mica de pares (No*, nivel) */
-    size_t cap = 64, head = 0, tail = 0;
-    No **q = (No**)malloc(cap * sizeof(No*));
-    int *lvl = (int*)malloc(cap * sizeof(int));
-    if (!q || !lvl) { perror("<imprimirPorNivel:malloc>"); free(q); free(lvl); return; }
-
-    #define ENQUEUE(node, level) do { \
-        if (tail >= cap) { \
-            cap *= 2; \
-            q = (No**)realloc(q, cap * sizeof(No*)); \
-            lvl = (int*)realloc(lvl, cap * sizeof(int)); \
-            if (!q || !lvl) { perror("<imprimirPorNivel:realloc>"); free(q); free(lvl); return; } \
-        } \
-        q[tail] = (node); \
-        lvl[tail] = (level); \
-        tail++; \
-    } while(0)
-
-    ENQUEUE(arv->raiz, 0);
-
-    int curr = -1;
-    while (head < tail) {
-        No *n = q[head];
-        int l = lvl[head];
-        head++;
-
-        if (l != curr) {
-            curr = l;
-            printf("\nNivel %d: ", curr);
-        } else {
-            printf(" | ");
-        }
-
-        _printKeys(n);
-
-        if (!n->folha && n->filhos) {
-            /* Enfileira atÈ qtdChaves+1 filhos n„o-nulos */
-            for (int i = 0; i <= n->qtdChaves; i++) {
-                if (n->filhos[i]) ENQUEUE(n->filhos[i], l + 1);
-            }
-        }
-    }
-    printf("\n");
-
-    free(q);
-    free(lvl);
-    #undef ENQUEUE
-}
-
-/* Estruturado (hier·rquico) */
-void imprimirEstruturado(Arvore *arv) {
-    if (!arv || !arv->raiz || arv->raiz->qtdChaves == 0) {
-        printf("(arvore vazia)\n");
-        return;
-    }
-    _imprimirEstruturadoNo(arv->raiz, 0);
-}
 
 int main()
 {
@@ -891,11 +797,7 @@ int main()
         printf("ORDEM: %d | MAX CHAVES: %d |MAX FILHOS: %d |\n",ORDEM,NUM_CHAVES,NUM_FILHOS);
         printf("===========================================\n");
         printf("[1]-INSERIR\n");
-        printf("[2] - BUSCAR\n");
-        printf("[3] - REMOVER\n");
-        printf("[4] - IMPRIMIR EM ORDEM\n");
-        printf("[5] - IMPRIMIR POR NIVEL (BFS)\n");
-        printf("[6] - IMPRIMIR ESTRUTURADO (HIERARQUICO)\n");
+
         printf("DIGITE UMA OPCAO:_");
         scanf("%d",&op);
 
@@ -907,42 +809,6 @@ int main()
             scanf("%d",&chave);
             inserirNaArvore(arvore,chave);
 
-            break;
-        case 2:
-        {
-            printf("\nDigite a chave que deseja buscar: ");
-            scanf("%d", &chave);
-            int pos = -1;
-            No *n = buscarEmArvore(arvore, chave, &pos);
-            if (n != NULL)
-            {
-                printf("Chave %d ENCONTRADA no no, posicao %d.\n", chave, pos);
-            }
-            else
-            {
-                printf("Chave %d NAO encontrada.\n", chave);
-            }
-            break;
-        }
-
-        case 3:
-        {
-            printf("\nDigite a chave que deseja remover: ");
-            scanf("%d", &chave);
-            removerArvore(arvore, chave);
-            printf("Remocao solicitada para a chave %d.\n", chave);
-            break;
-        }
-        case 4:
-            imprimirEmOrdem(arvore);
-            break;
-
-        case 5:
-            imprimirPorNivel(arvore);
-            break;
-
-        case 6:
-            imprimirEstruturado(arvore);
             break;
 
         case 0:
