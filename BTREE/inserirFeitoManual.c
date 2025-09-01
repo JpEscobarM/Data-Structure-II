@@ -172,15 +172,17 @@ void split(Arvore *arv, No *filhoPrincipal)
      if (!arv || !filhoPrincipal) return;
 
     int i;
-    int j = 0;
+    int j;
+    No *novoIrmao = criarNo(filhoPrincipal->folha);
+    No *novaRaiz = criarNo(0);
+
+
     if(arv && arv->raiz == filhoPrincipal) // SPLIT NA RAIZ
     {
 
-        No *novoIrmao = criarNo(filhoPrincipal->folha);
-
-        No *novaRaiz = criarNo(0);
 
 
+        j=0;
         for(i = ORDEM+1; i < filhoPrincipal->qtdChaves ; i++)
         {
             novoIrmao->chaves[j] = filhoPrincipal->chaves[i];
@@ -222,6 +224,44 @@ void split(Arvore *arv, No *filhoPrincipal)
         arv->raiz=novaRaiz;
 
     }//LIDANDO COM RAIZ
+    else //NORMAL
+    {
+
+
+        j=0;
+        for(i = ORDEM+1; i < filhoPrincipal->qtdChaves ; i++)
+        {
+            novoIrmao->chaves[j] = filhoPrincipal->chaves[i];
+            novoIrmao->qtdChaves++;
+
+            filhoPrincipal->chaves[i] = VAZIO;
+            j++;
+
+        }
+        filhoPrincipal->qtdChaves-= j ;
+
+        int posicao = filhoPrincipal->pai->qtdChaves;
+
+        filhoPrincipal->pai->chaves[posicao]=filhoPrincipal->chaves[ORDEM];
+        filhoPrincipal->pai->qtdChaves++;
+        filhoPrincipal->chaves[ORDEM] = VAZIO;
+        filhoPrincipal->qtdChaves--;
+
+        if(!filhoPrincipal->folha)
+        {
+            j=0;
+            for(int i = ORDEM; i < NUM_FILHOS ; i++)
+            {
+                novoIrmao->filhos[j] = filhoPrincipal->filhos[i];
+                filhoPrincipal->filhos[i] = NULL;
+                j++;
+
+            }
+        }
+
+
+
+    }
 
 
 
@@ -235,7 +275,6 @@ void inserir(Arvore *arv, int chave)
 
         arv->raiz = criarNo(1);
         addChave(arv->raiz,chave);
-        printf("caiu");
         return;
     }
 
@@ -262,6 +301,10 @@ void inserir(Arvore *arv, int chave)
     {
         split(arv,noBuscado);
     }
+
+
+
+
 
 
 }
@@ -303,6 +346,10 @@ int main()
     inserir(arv,1);
     inserir(arv,2);
     inserir(arv,3);
+    inserir(arv,4);
+    inserir(arv,5);
+    inserir(arv,6);
+    inserir(arv,7);
 
 
     bfs(arv->raiz,0);
