@@ -227,7 +227,7 @@ void split(Arvore *arv, No *filhoPrincipal)
     else //NORMAL
     {
 
-
+        No *pai = filhoPrincipal->pai;
         j=0;
         for(i = ORDEM+1; i < filhoPrincipal->qtdChaves ; i++)
         {
@@ -240,10 +240,11 @@ void split(Arvore *arv, No *filhoPrincipal)
         }
         filhoPrincipal->qtdChaves-= j ;
 
-        int posicao = filhoPrincipal->pai->qtdChaves;
+        int posicao = pai->qtdChaves;
 
-        filhoPrincipal->pai->chaves[posicao]=filhoPrincipal->chaves[ORDEM];
-        filhoPrincipal->pai->qtdChaves++;
+
+        pai->chaves[posicao]=filhoPrincipal->chaves[ORDEM];
+        pai->qtdChaves++;
         filhoPrincipal->chaves[ORDEM] = VAZIO;
         filhoPrincipal->qtdChaves--;
 
@@ -259,7 +260,7 @@ void split(Arvore *arv, No *filhoPrincipal)
             }
         }
 
-
+        pai->filhos[posicao] = novoIrmao;
 
     }
 
