@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#define ORDEM 1
+#define ORDEM 2
 #define NUM_CHAVES (2*ORDEM)
 #define NUM_FILHOS (NUM_CHAVES+1)
 #define VAZIO -99999
@@ -89,31 +89,23 @@ return posicao;
 }
 
 
-No *buscarNo(No *src, int chave)
+No *buscarNo(No *no, int ch)
 {
-     if (!src) return NULL;
-
-    int i = 0;
-
-    while(i < src->qtdChaves && chave > src->chaves[i])
+    if (no != NULL)
     {
-        i++;
-    }
-    //1 - SE A CHAVE ESTA NO INDICE i DO NÓ ATUAL ENTÃO RETORNA O MESMO.
-    if(i < src->qtdChaves && chave == src->chaves[i])
-    {
+        int i = 0;
+        while (i < no->qtdChaves && ch > no->chaves[i])
+        {
+            i++;
+        }
+        if (i < no->qtdChaves && ch == no->chaves[i])
+        {
+            return no; // encontrou chave
+    } else if (no->filhos[i] != NULL) {
+         return buscarNo(no->filhos[i], ch);
+    } else return no;
 
-        return src;
-    }
-    else if (src->filhos[i] != NULL)
-    {
-        return buscarNo(src->filhos[i], chave);
-    }
-    else
-    {
-        return src;
-    }
-
+    } else return NULL; //nó é NULL, não há como buscar
 
 }
 
@@ -351,7 +343,8 @@ int main()
     inserir(arv,5);
     inserir(arv,6);
     inserir(arv,7);
-
+    inserir(arv,8);
+    inserir(arv,9);
 
     bfs(arv->raiz,0);
     return 0;
