@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ORDEM 2
+#define ORDEM 1
 #define MAX (2*ORDEM)
 #define MIN (ORDEM)
 
@@ -349,7 +349,7 @@ void printTree(const struct BTreeNode *r) {
 
 int main() {
 
-    for(int i =0 ; i < 1000; i++)
+    for(int i =0 ; i < 10000; i++)
     {
         insertion(i);
     }
