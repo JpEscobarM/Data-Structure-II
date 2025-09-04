@@ -1,35 +1,35 @@
-// C Program to Implement B+ Tree
+// PROGRAMA EM C PARA IMPLEMENTAR ÁRVORE B+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #define  ORDEM 1
 #define MIN_FILHOS (2*ORDEM)+1
-// Minimum degree (defines the range for number of
-      // keys)
+// GRAU MÍNIMO (DEFINE A FAIXA DE QUANTIDADE DE
+// CHAVES)
 
 typedef struct Node {
-    // Array of keys
+    // VETOR DE CHAVES
     int* keys;
-    // Minimum degree (defines the range for number of keys)
+    // GRAU MÍNIMO (DEFINE A FAIXA DE QUANTIDADE DE CHAVES)
     int t;
-    // Array of child pointers
+    // VETOR DE PONTEIROS PARA FILHOS
     struct Node** children;
-    // Current number of keys
+    // NÚMERO ATUAL DE CHAVES
     int n;
-    // To determine whether the node is leaf or not
+    // INDICA SE O NÓ É FOLHA OU NÃO
     bool leaf;
-    // Pointer to next leaf node
+    // PONTEIRO PARA A PRÓXIMA FOLHA
     struct Node* next;
 } Node;
 
 typedef struct BTree {
-    // Pointer to root node
+    // PONTEIRO PARA O NÓ RAIZ
     Node* root;
-    // Minimum degree
+    // GRAU MÍNIMO
     int t;
 } BTree;
 
-// Function to create a new B+ tree node
+// FUNÇÃO PARA CRIAR UM NOVO NÓ DE ÁRVORE B+
 Node* createNode(int t, bool leaf)
 {
     Node* newNode = (Node*)malloc(sizeof(Node));
@@ -43,7 +43,7 @@ Node* createNode(int t, bool leaf)
     return newNode;
 }
 
-// Function to create a new B+ tree
+// FUNÇÃO PARA CRIAR UMA NOVA ÁRVORE B+
 BTree* createBTree(int t)
 {
     BTree* btree = (BTree*)malloc(sizeof(BTree));
@@ -52,7 +52,7 @@ BTree* createBTree(int t)
     return btree;
 }
 
-// Function to display the B+ tree and print its keys
+// FUNÇÃO PARA EXIBIR A ÁRVORE B+ E IMPRIMIR SUAS CHAVES
 void display(Node* node)
 {
     if (node == NULL)
@@ -69,54 +69,80 @@ void display(Node* node)
     }
 }
 
-// Function to search a key in the B+ tree
-bool search(Node* node, int key)
-{
-    int i = 0;
-    while (i < node->n && key > node->keys[i]) {
-        i++;
+// FUNÇÃO PARA BUSCAR UMA CHAVE NA ÁRVORE B+
+bool search(Node* node, int key) {
+    if (!node) return false;
+    while (!node->leaf) {
+        int i = 0;
+        while (i < node->n && key >= node->keys[i]) i++;
+        node = node->children[i];
     }
-    if (i < node->n && key == node->keys[i]) {
-        return true;
-    }
-    if (node->leaf) {
-        return false;
-    }
-    return search(node->children[i], key);
+    for (int i = 0; i < node->n; ++i)
+        if (node->keys[i] == key) return true;
+    return false;
 }
 
-// Function to split the child of a node during insertion
-void splitChild(Node* parent, int i, Node* child)
-{
+
+
+// FUNÇÃO PARA DIVIDIR O FILHO DE UM NÓ DURANTE A INSERÇÃO
+void splitChild(Node* parent, int i, Node* child) {
     int t = child->t;
-    Node* newChild = createNode(t, child->leaf);
+
+    if (child->leaf) {
+        // --- SPLIT DE FOLHA (B+) ---
+        Node* newLeaf = createNode(t, true);
+
+        int split = t;                     // deixa t chaves na esquerda
+        int rightCount = child->n - split; // resto vai pra direita
+
+        // move metade alta para a nova folha
+        for (int j = 0; j < rightCount; ++j)
+            newLeaf->keys[j] = child->keys[split + j];
+
+        child->n   = split;
+        newLeaf->n = rightCount;
+
+        // encadeia folhas (lista ligada de folhas)
+        newLeaf->next = child->next;
+        child->next   = newLeaf;
+
+        // abre espaço no pai para novo ponteiro
+        for (int j = parent->n; j >= i + 1; --j)
+            parent->children[j + 1] = parent->children[j];
+        parent->children[i + 1] = newLeaf;
+
+        // Sobe **cópia** do separador: a MENOR chave da nova folha
+        int sep = newLeaf->keys[0];
+        for (int j = parent->n - 1; j >= i; --j)
+            parent->keys[j + 1] = parent->keys[j];
+        parent->keys[i] = sep;
+        parent->n += 1;
+        return;
+    }
+
+    // --- SPLIT DE NÓ INTERNO (igual ao B-tree) ---
+    Node* newChild = createNode(t, false);
     newChild->n = t - 1;
-
-    for (int j = 0; j < t - 1; j++) {
+    for (int j = 0; j < t - 1; ++j)
         newChild->keys[j] = child->keys[j + t];
-    }
+    for (int j = 0; j < t; ++j)
+        newChild->children[j] = child->children[j + t];
 
-    if (!child->leaf) {
-        for (int j = 0; j < t; j++) {
-            newChild->children[j] = child->children[j + t];
-        }
-    }
-
+    int promoted = child->keys[t - 1];
     child->n = t - 1;
 
-    for (int j = parent->n; j >= i + 1; j--) {
+    for (int j = parent->n; j >= i + 1; --j)
         parent->children[j + 1] = parent->children[j];
-    }
     parent->children[i + 1] = newChild;
 
-    for (int j = parent->n - 1; j >= i; j--) {
+    for (int j = parent->n - 1; j >= i; --j)
         parent->keys[j + 1] = parent->keys[j];
-    }
-    parent->keys[i] = child->keys[t - 1];
+    parent->keys[i] = promoted;
     parent->n += 1;
 }
 
-// Function to insert a non-full node
+
+// FUNÇÃO PARA INSERIR EM UM NÓ NÃO CHEIO
 void insertNonFull(Node* node, int key)
 {
     int i = node->n - 1;
@@ -144,7 +170,7 @@ void insertNonFull(Node* node, int key)
     }
 }
 
-// Function to insert a key into the B+ tree
+// FUNÇÃO PARA INSERIR UMA CHAVE NA ÁRVORE B+
 void insert(BTree* btree, int key)
 {
     Node* root = btree->root;
@@ -160,8 +186,8 @@ void insert(BTree* btree, int key)
     }
 }
 
-// Function prototypes for helper functions used in
-// deleteKey
+// PROTÓTIPOS DE FUNÇÕES AUXILIARES USADAS EM
+// DELETEKEY
 void deleteKeyHelper(Node* node, int key);
 int findKey(Node* node, int key);
 void removeFromLeaf(Node* node, int idx);
@@ -171,50 +197,49 @@ void borrowFromPrev(Node* node, int idx);
 void borrowFromNext(Node* node, int idx);
 void merge(Node* node, int idx);
 
-// Function for deleting a key from the B+ tree
+// FUNÇÃO PARA REMOVER UMA CHAVE DA ÁRVORE B+
 void deleteKey(BTree* btree, int key)
 {
     Node* root = btree->root;
 
-    // Call a helper function to delete the key recursively
+    // CHAMA UMA FUNÇÃO AUXILIAR PARA REMOVER A CHAVE RECURSIVAMENTE
     deleteKeyHelper(root, key);
 
-    // If root has no keys left and it has a child, make its
-    // first child the new root
+    // SE A RAIZ FICOU SEM CHAVES E POSSUI UM FILHO, TORNA O
+    // PRIMEIRO FILHO A NOVA RAIZ
     if (root->n == 0 && !root->leaf) {
         btree->root = root->children[0];
         free(root);
     }
 }
 
-// Helper function to recursively delete a key from the B+
-// tree
+// FUNÇÃO AUXILIAR PARA REMOVER RECURSIVAMENTE UMA CHAVE DA ÁRVORE B+
 void deleteKeyHelper(Node* node, int key)
 {
     int idx = findKey(
-        node, key); // Find the index of the key in the node
+        node, key); // ENCONTRA O ÍNDICE DA CHAVE NO NÓ
 
-    // If key is present in this node
+    // SE A CHAVE ESTÁ PRESENTE NESTE NÓ
     if (idx < node->n && node->keys[idx] == key) {
         if (node->leaf) {
-            // If the node is a leaf, simply remove the key
+            // SE O NÓ É FOLHA, SIMPLESMENTE REMOVE A CHAVE
             removeFromLeaf(node, idx);
         }
         else {
-            // If the node is not a leaf, replace the key
-            // with its predecessor/successor
+            // SE O NÓ NÃO É FOLHA, SUBSTITUI A CHAVE
+            // PELO SEU PREDECESSOR/SUCESSOR
             int predecessor = getPredecessor(node, idx);
             node->keys[idx] = predecessor;
-            // Recursively delete the predecessor
+            // REMOVE RECURSIVAMENTE O PREDECESSOR
             deleteKeyHelper(node->children[idx],
                             predecessor);
         }
     }
     else {
-        // If the key is not present in this node, go down
-        // the appropriate child
+        // SE A CHAVE NÃO ESTÁ NESTE NÓ, DESCE PARA O
+        // FILHO APROPRIADO
         if (node->leaf) {
-            // Key not found in the tree
+            // CHAVE NÃO ENCONTRADA NA ÁRVORE
             printf("Key %d not found in the B+ tree.\n",
                    key);
             return;
@@ -222,17 +247,17 @@ void deleteKeyHelper(Node* node, int key)
 
         bool isLastChild = (idx == node->n);
 
-        // If the child where the key is supposed to be lies
-        // has less than t keys, fill that child
+        // SE O FILHO ONDE A CHAVE DEVERIA ESTAR
+        // TEM MENOS QUE T CHAVES, PREENCHA ESSE FILHO
         if (node->children[idx]->n < node->t) {
             fill(node, idx);
         }
 
-        // If the last child has been merged, it must have
-        // merged with the previous child
+        // SE O ÚLTIMO FILHO FOI FUNDIDO, ELE DEVE TER
+        // SIDO FUNDIDO COM O FILHO ANTERIOR
 
-        // So, we need to recursively delete the key from
-        // the previous child
+        // ENTÃO, PRECISAMOS REMOVER RECURSIVAMENTE A CHAVE DO
+        // FILHO ANTERIOR
         if (isLastChild && idx > node->n) {
             deleteKeyHelper(node->children[idx - 1], key);
         }
@@ -241,7 +266,7 @@ void deleteKeyHelper(Node* node, int key)
         }
     }
 }
-// Function to find the index of a key in a node
+// FUNÇÃO PARA ENCONTRAR O ÍNDICE DE UMA CHAVE EM UM NÓ
 int findKey(Node* node, int key)
 {
     int idx = 0;
@@ -251,7 +276,7 @@ int findKey(Node* node, int key)
     return idx;
 }
 
-// Function to remove a key from a leaf node
+// FUNÇÃO PARA REMOVER UMA CHAVE DE UM NÓ FOLHA
 void removeFromLeaf(Node* node, int idx)
 {
     for (int i = idx + 1; i < node->n; ++i) {
@@ -260,8 +285,7 @@ void removeFromLeaf(Node* node, int idx)
     node->n--;
 }
 
-// Function to get the predecessor of a key in a non-leaf
-// node
+// FUNÇÃO PARA OBTER O PREDECESSOR DE UMA CHAVE EM UM NÓ NÃO FOLHA
 int getPredecessor(Node* node, int idx)
 {
     Node* curr = node->children[idx];
@@ -271,8 +295,8 @@ int getPredecessor(Node* node, int idx)
     return curr->keys[curr->n - 1];
 }
 
-// Function to fill up the child node present at the idx-th
-// position in the node node
+// FUNÇÃO PARA PREENCHER O FILHO PRESENTE NA POSIÇÃO IDX-ÉSIMA
+// DO NÓ
 void fill(Node* node, int idx)
 {
     if (idx != 0 && node->children[idx - 1]->n >= node->t) {
@@ -292,110 +316,107 @@ void fill(Node* node, int idx)
     }
 }
 
-// Function to borrow a key from the previous child and move
-// it to the idx-th child
+// FUNÇÃO PARA TOMAR EMPRESTADA UMA CHAVE DO FILHO ANTERIOR E MOVÊ-LA
+// PARA O FILHO NA POSIÇÃO IDX
 void borrowFromPrev(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx - 1];
 
-    // Move all keys in child one step ahead
+    // MOVE TODAS AS CHAVES EM CHILD UMA POSIÇÃO À FRENTE
     for (int i = child->n - 1; i >= 0; --i) {
         child->keys[i + 1] = child->keys[i];
     }
 
-    // If child is not a leaf, move its child pointers one
-    // step ahead
+    // SE CHILD NÃO É FOLHA, MOVE SEUS PONTEIROS DE FILHOS
+    // UMA POSIÇÃO À FRENTE
     if (!child->leaf) {
         for (int i = child->n; i >= 0; --i) {
             child->children[i + 1] = child->children[i];
         }
     }
 
-    // Setting child's first key equal to node's key[idx -
-    // 1]
+    // DEFINE A PRIMEIRA CHAVE DE CHILD IGUAL À CHAVE NODE->KEYS[IDX - 1]
     child->keys[0] = node->keys[idx - 1];
 
-    // Moving sibling's last child as child's first child
+    // MOVE O ÚLTIMO FILHO DO IRMÃO COMO PRIMEIRO FILHO DE CHILD
     if (!child->leaf) {
         child->children[0] = sibling->children[sibling->n];
     }
 
-    // Moving the key from the sibling to the parent
+    // MOVE A CHAVE DO IRMÃO PARA O PAI
     node->keys[idx - 1] = sibling->keys[sibling->n - 1];
 
-    // Incrementing and decrementing the key counts of child
-    // and sibling respectively
+    // INCREMENTA E DECREMENTA AS CONTAGENS DE CHAVES DE CHILD
+    // E DO IRMÃO, RESPECTIVAMENTE
     child->n += 1;
     sibling->n -= 1;
 }
 
-// Function to borrow a key from the next child and move it
-// to the idx-th child
+// FUNÇÃO PARA TOMAR EMPRESTADA UMA CHAVE DO PRÓXIMO FILHO E MOVÊ-LA
+// PARA O FILHO NA POSIÇÃO IDX
 void borrowFromNext(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx + 1];
 
-    // Setting child's (t - 1)th key equal to node's
-    // key[idx]
+    // DEFINE A (T - 1)-ÉSIMA CHAVE DE CHILD COMO NODE->KEYS[IDX]
     child->keys[(child->n)] = node->keys[idx];
 
-    // If child is not a leaf, move its child pointers one
-    // step ahead
+    // SE CHILD NÃO É FOLHA, MOVE SEUS PONTEIROS DE FILHOS
+    // UMA POSIÇÃO À FRENTE
     if (!child->leaf) {
         child->children[(child->n) + 1]
             = sibling->children[0];
     }
 
-    // Setting node's idx-th key equal to sibling's first
-    // key
+    // DEFINE A CHAVE NA POSIÇÃO IDX DO PAI COMO A PRIMEIRA
+    // CHAVE DO IRMÃO (SIBLING)
     node->keys[idx] = sibling->keys[0];
 
-    // Moving all keys in sibling one step behind
+    // MOVE TODAS AS CHAVES DO IRMÃO UMA POSIÇÃO PARA TRÁS
     for (int i = 1; i < sibling->n; ++i) {
         sibling->keys[i - 1] = sibling->keys[i];
     }
 
-    // If sibling is not a leaf, move its child pointers one
-    // step behind
+    // SE O IRMÃO NÃO É FOLHA, MOVE SEUS PONTEIROS DE FILHOS
+    // UMA POSIÇÃO PARA TRÁS
     if (!sibling->leaf) {
         for (int i = 1; i <= sibling->n; ++i) {
             sibling->children[i - 1] = sibling->children[i];
         }
     }
 
-    // Incrementing and decrementing the key counts of child
-    // and sibling respectively
+    // INCREMENTA E DECREMENTA AS CONTAGENS DE CHAVES DE CHILD
+    // E DO IRMÃO, RESPECTIVAMENTE
     child->n += 1;
     sibling->n -= 1;
 }
 
-// Function to merge idx-th child of node with (idx + 1)-th
-// child of node
+// FUNÇÃO PARA FUNDIR O FILHO IDX DO NÓ COM O FILHO (IDX + 1)
+// DO MESMO NÓ
 void merge(Node* node, int idx)
 {
     Node* child = node->children[idx];
     Node* sibling = node->children[idx + 1];
 
-    // Pulling a key from the current node and inserting it
-    // into (t-1)th position of child
+    // PUXA UMA CHAVE DO NÓ ATUAL E A INSERE NA
+    // POSIÇÃO (T-1) DE CHILD
     child->keys[child->n] = node->keys[idx];
 
-    // If child is not a leaf, move its child pointers one
-    // step ahead
+    // SE CHILD NÃO É FOLHA, MOVE SEUS PONTEIROS DE FILHOS
+    // UMA POSIÇÃO À FRENTE
     if (!child->leaf) {
         child->children[child->n + 1]
             = sibling->children[0];
     }
 
-    // Copying the keys from sibling to child
+    // COPIA AS CHAVES DO IRMÃO PARA CHILD
     for (int i = 0; i < sibling->n; ++i) {
         child->keys[i + child->n + 1] = sibling->keys[i];
     }
 
-    // If child is not a leaf, copy the children pointers as
-    // well
+    // SE CHILD NÃO É FOLHA, COPIA TAMBÉM OS PONTEIROS DE FILHOS
     if (!child->leaf) {
         for (int i = 0; i <= sibling->n; ++i) {
             child->children[i + child->n + 1]
@@ -403,46 +424,86 @@ void merge(Node* node, int idx)
         }
     }
 
-    // Move all keys after idx in the current node one step
-    // before, so as to fill the gap created by moving
-    // keys[idx] to child
+    // MOVE TODAS AS CHAVES APÓS IDX NO NÓ ATUAL UMA POSIÇÃO
+    // PARA TRÁS, PARA PREENCHER O ESPAÇO CRIADO AO MOVER
+    // KEYS[IDX] PARA CHILD
     for (int i = idx + 1; i < node->n; ++i) {
         node->keys[i - 1] = node->keys[i];
     }
 
-    // Move the child pointers after (idx + 1) in the
-    // current node one step before
+    // MOVE OS PONTEIROS DE FILHOS APÓS (IDX + 1) NO
+    // NÓ ATUAL UMA POSIÇÃO PARA TRÁS
     for (int i = idx + 2; i <= node->n; ++i) {
         node->children[i - 1] = node->children[i];
     }
 
-    // Update the key count of child and current node
+    // ATUALIZA A CONTAGEM DE CHAVES DE CHILD E DO NÓ ATUAL
     child->n += sibling->n + 1;
     node->n--;
 
-    // Free the memory occupied by sibling
+    // LIBERA A MEMÓRIA OCUPADA PELO IRMÃO
     free(sibling);
 }
+
+
+
+// -----------------
+// PRETTY PRINT (ROTACIONADA 90° PARA A ESQUERDA)
+// -----------------
+
+// IMPRIME INDENTAÇÃO (4 ESPAÇOS POR NÍVEL)
+static void pp_indent(int level) {
+    for (int i = 0; i < level * 4; ++i) putchar(' ');
+}
+
+// RECUSIVA: VISITA PRIMEIRO O FILHO MAIS À DIREITA, DEPOIS (CHAVE, FILHO À ESQUERDA)
+static void printTreeRecRot(const Node *node, int level) {
+    if (!node) return;
+
+    // NÓ VAZIO (PODE OCORRER NA RAIZ APÓS MERGES/REDUÇÕES)
+    if (node->n == 0) {
+        pp_indent(level);
+        printf("[]\n");
+        return;
+    }
+
+    // PRIMEIRO O FILHO MAIS À DIREITA
+    if (!node->leaf)
+        printTreeRecRot(node->children[node->n], level + 1);
+
+    // DEPOIS, DA DIREITA PARA A ESQUERDA: IMPRIME A CHAVE E A SUBÁRVORE À ESQUERDA
+    for (int i = node->n - 1; i >= 0; --i) {
+        pp_indent(level);
+        printf("%d\n", node->keys[i]);
+        if (!node->leaf)
+            printTreeRecRot(node->children[i], level + 1);
+    }
+}
+
+// FUNÇÃO PÚBLICA: IMPRIME A ÁRVORE TODA ROTACIONADA
+void printTreeRotated(const BTree *T) {
+    printf("\nB+ TREE (VISUALIZAÇÃO ROTACIONADA 90° PARA A ESQUERDA)\n");
+    printf("MAIORES À ESQUERDA/TOPO, MENORES À DIREITA/BAIXO.\n\n");
+    printTreeRecRot(T ? T->root : NULL, 0);
+}
+
+
 
 int main()
 {
     BTree* btree = createBTree(MIN_FILHOS);
 
-    // Insert elements into the B+ tree
-    insert(btree, 2);
-    insert(btree, 4);
-    insert(btree, 7);
-    insert(btree, 10);
-    insert(btree, 17);
-    insert(btree, 21);
-    insert(btree, 28);
-
-    // Print the B+ tree
+    // INSERE ELEMENTOS NA ÁRVORE B+
+    for(int i = 0 ; i < 20; i ++)
+    {
+        insert(btree,i);
+    }
+    // IMPRIME A ÁRVORE B+
     printf("B+ Tree after insertion: ");
     display(btree->root);
     printf("\n");
 
-    // Search for a key
+    // BUSCA POR UMA CHAVE
     int key_to_search = 17;
     bool found = search(btree->root, key_to_search);
 
@@ -455,13 +516,23 @@ int main()
                key_to_search);
     }
 
-    // Delete element from the B+ tree
+    // REMOVE ELEMENTO DA ÁRVORE B+
     deleteKey(btree, 17);
 
-    // Print the B+ tree after deletion
+    // IMPRIME A ÁRVORE B+ APÓS A REMOÇÃO
     printf("B+ Tree after deletion: ");
     display(btree->root);
     printf("\n");
+
+    deleteKey(btree, 15);
+    deleteKey(btree, 14);
+    deleteKey(btree, 9);
+
+    // IMPRIME A ÁRVORE B+ APÓS A REMOÇÃO
+    printf("B+ Tree after deletion: ");
+    display(btree->root);
+    printf("\n");
+
 
     found = search(btree->root, key_to_search);
 
@@ -473,6 +544,8 @@ int main()
         printf("Key %d not found in the B+ tree.\n",
                key_to_search);
     }
+
+    printTreeRotated(btree);
 
     return 0;
 }
