@@ -184,7 +184,7 @@ void mergeNodes(struct BTreeNode *myNode, int pos) {
 
   x2->count++;
   x2->item[x2->count] = myNode->item[pos];
-  x2->linker[x2->count] = x1->linker[0]; // correção: pegar filho esquerdo do x1
+  x2->linker[x2->count] = x1->linker[0];
 
   while (j <= x1->count) {
     x2->count++;
