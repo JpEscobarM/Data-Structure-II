@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define ORDEM 2
-
+#define BAD -99999
 #define MAX_CHAVES (2*ORDEM)
 
 #define MIN_CHAVES (ORDEM)
@@ -391,6 +391,194 @@ void inserir(Arvore *arv,int chave,int debug)
 
 /*============================================================*/
 
+/*=====================FUNÇÕES PARA DELEÇÃO====================*/
+
+int removerChaveFolha(No *atual, int chave)
+{
+    int valorIndefinido = BAD;
+    int posicaoChave = valorIndefinido;
+
+    if (!atual || atual->qtdChaves == 0) return -1;
+
+    // Localiza a posição da chave
+    for (int i = 0; i < atual->qtdChaves; i++)
+    {
+        if (atual->chaves[i] == chave)
+        {
+            posicaoChave = i;
+            break;
+        }
+    }
+
+    // Chave não encontrada
+    if (posicaoChave == valorIndefinido) return -1;
+
+    // Desloca as chaves à esquerda
+    for (int i = posicaoChave; i < atual->qtdChaves - 1; i++)
+    {
+        atual->chaves[i] = atual->chaves[i + 1];
+    }
+
+    atual->qtdChaves--;
+
+    return chave; // sucesso: retorna a chave removida
+}
+
+int procuraIndiceFilho(No *filho, No *pai)
+{
+    if (!filho || !pai)
+    {
+        printf("\n[ERRO]<procuraIndiceFilho> Filho ou Pai é NULL\n");
+        return BAD;
+    }
+
+    for (int i = 0; i <= pai->qtdChaves; i++) // <= pois pode haver qtdChaves+1 filhos
+    {
+        if (pai->filhos[i] == filho)
+        {
+            return i;
+        }
+    }
+
+    printf("\n[ERRO]<procuraIndiceFilho> Filho %p nao encontrado no vetor de filhos do pai %p\n", filho, pai);
+    return BAD;
+}
+
+int sucessor(No *src, int index)
+{
+    No *aux = src->filhos[index+1];
+    while(!aux->folha) aux = aux->filhos[0];
+    return aux->chaves[0];
+}
+
+int predecessor(No *src, int index)
+{
+    No *aux = src->filhos[index-1];
+    while(!aux->folha) aux = aux->filhos[aux->qtdChaves];
+    return aux->chaves[aux->qtdChaves-1];
+}
+
+void deletarChave(Arvore *arv, int chave)
+{
+    No *pai;
+    No *folha = busca(arv->raiz, chave, 0);
+
+    if (!folha)
+    {
+        printf("\n<deletarChave> Nao foi possivel encontrar a chave na arvore.\n");
+        return;
+    }
+
+    // Verifica se a chave está na folha retornada
+    int chaveEncontrada = 0;
+    for (int i = 0; i < folha->qtdChaves; i++)
+    {
+        if (folha->chaves[i] == chave)
+        {
+            chaveEncontrada = 1;
+            break;
+        }
+    }
+
+    if (!chaveEncontrada)
+    {
+        printf("\n<deletarChave> Chave %d nao encontrada no nó folha.\n", chave);
+        return;
+    }
+
+    // CASO I - Chave presente apenas no nó folha e ele tem mais que o mínimo
+    if (folha->folha)
+    {
+        if (folha->pai != NULL)
+        {
+            pai = folha->pai;
+
+            int estaEmIndice = 0;
+            for (int i = 0; i < pai->qtdChaves; i++)
+            {
+                if (pai->chaves[i] == chave)
+                {
+                    estaEmIndice = 1;
+                    break;
+                }
+            }
+
+            if (!estaEmIndice && folha->qtdChaves > ORDEM)
+            {
+                if (removerChaveFolha(folha, chave) == BAD)
+                {
+                    printf("\n<removerChaveFolha> Erro ao remover chave %d do nó folha %p\n", chave, folha);
+                }
+                else
+                {
+                    printf("\nChave %d removida com sucesso do nó folha %p\n", chave, folha);
+                }
+                return;
+            }
+            else //CASO II - Há um número mínimo exato de chaves no nó == ORDEM.
+            {
+                pai = folha->pai;
+                int indiceDoFilho = procuraIndiceFilho(folha, pai);
+
+                No *irmaoEsq = (indiceDoFilho > 0) ? pai->filhos[indiceDoFilho - 1] : NULL;
+                No *irmaoDir = (indiceDoFilho < pai->qtdChaves) ? pai->filhos[indiceDoFilho + 1] : NULL;
+
+                removerChaveFolha(folha, chave);
+
+                if (irmaoEsq && irmaoEsq->qtdChaves > ORDEM)
+                {
+                    int chaveEmprestada = irmaoEsq->chaves[irmaoEsq->qtdChaves - 1];
+                    addChaveEmFolha(folha, chaveEmprestada);
+                    removerChaveFolha(irmaoEsq, chaveEmprestada);
+
+                    // Atualiza índice no pai com a nova menor chave do 'folha'
+                    pai->chaves[indiceDoFilho - 1] = folha->chaves[0];
+                }
+                else if (irmaoDir && irmaoDir->qtdChaves > ORDEM)
+                {
+                    int chaveEmprestada = irmaoDir->chaves[0];
+                    addChaveEmFolha(folha, chaveEmprestada);
+                    removerChaveFolha(irmaoDir, chaveEmprestada);
+
+                    // Atualiza índice no pai com a nova menor chave do irmão direito
+                    pai->chaves[indiceDoFilho] = irmaoDir->chaves[0];
+                }
+                else
+                {
+                    printf("<redistribuicao> Nenhum irmão com chaves para emprestar\n");
+                    // aqui viria o passo de fusão, que seria o "Caso III"
+                }
+            }
+        }
+        else// É FOLHA E RAIZ
+        {
+            // Caso a raiz seja folha (único nó na árvore)
+            if (folha->qtdChaves > 1)
+            {
+                if (removerChaveFolha(folha, chave) == BAD)
+                {
+                    printf("\n<removerChaveFolha> Erro ao remover chave %d da raiz folha\n", chave);
+                }
+                else
+                {
+                    printf("\nChave %d removida com sucesso da raiz folha %p\n", chave, folha);
+                }
+                return;
+            }
+            else
+            {
+                // Última chave da raiz (único elemento na árvore)
+                arv->raiz = NULL;
+                free(folha);
+                printf("\n[!] Chave %d removida. Arvore agora esta vazia.\n", chave);
+                return;
+            }
+        }
+    }
+}
+
+/*============================================================*/
+
 
 /*=====================FUNÇÕES PARA TESTE======================*/
 
@@ -559,12 +747,70 @@ void testeInsercaoSplit2() {
         if (achou) {
             printf("[OK] Chave %d encontrada na folha %p\n", chavesParaInserir[i], n);
         } else {
-            printf("[ERRO] Chave %d NÃO encontrada corretamente!\n", chavesParaInserir[i]);
+            printf("[ERRO] Chave %d NAO encontrada corretamente!\n", chavesParaInserir[i]);
         }
     }
 
     printf("\n==== FIM DO TESTE ====\n");
 }
+
+void testeDelecao()
+{
+    printf("\n========== INICIANDO TESTE DE DELECAO ==========\n");
+
+    Arvore arv;
+    arv.raiz = NULL;
+
+    int valores[] = {5, 15, 20, 25, 30, 35, 45, 55};
+    int total = sizeof(valores) / sizeof(valores[0]);
+
+    // Inserção
+    printf("\n[Inserindo valores para teste de delecao...]\n");
+    for (int i = 0; i < total; i++)
+    {
+        inserir(&arv, valores[i],0);
+    }
+
+    printf("\nEstado da arvore após insercoes:\n");
+    imprimeArvore(arv.raiz,0); // ou printArvore se preferir
+
+    // === CASO I ===
+    printf("\n[CASO I] Remover 55 (chave esta em folha com mais que ORDEM)\n");
+    deletarChave(&arv, 55);
+     imprimeArvore(arv.raiz,0);
+
+    // === CASO II - Redistribuição com irmão esquerdo ===
+    printf("\n[CASO II-A] Remover 5 (folha com exatamente ORDEM chaves, redistribuição com irmao esquerdo)\n");
+    deletarChave(&arv, 5);
+    imprimeArvore(arv.raiz,0);
+
+    // === CASO II - Redistribuição com irmão direito ===
+    printf("\n[CASO II-B] Remover 15 (redistribuicao com irmao direito)\n");
+    deletarChave(&arv, 15);
+   imprimeArvore(arv.raiz,0);
+
+    // === CASO RAIZ É FOLHA ===
+    printf("\n[CASO RAIZ FOLHA] Criando nova arvore com poucas chaves\n");
+
+    Arvore arvMinima;
+    arvMinima.raiz = NULL;
+    inserir(&arvMinima, 100,0);
+    inserir(&arvMinima, 200,0);
+
+    imprimeArvore(arvMinima.raiz,0);
+
+    printf("\nRemovendo 200 (ainda sobra 100 na raiz/folha)\n");
+    deletarChave(&arvMinima, 200);
+    imprimeArvore(arvMinima.raiz,0);
+
+    printf("\nRemovendo 100 (arvore ficara vazia)\n");
+    deletarChave(&arvMinima, 100);
+    imprimeArvore(arvMinima.raiz,0);
+
+    printf("\n========== FIM DO TESTE DE DELECAOO ==========\n");
+}
+
+
 /*============================================================*/
 
 int main()
@@ -576,6 +822,7 @@ int main()
 
     testeInsercaoSplit2();
 
+    testeDelecao();
 
 return 0;
 }
