@@ -156,6 +156,39 @@ No *busca(No *atual, int chave, int debug) {
     }
 }
 
+No *buscaIndice(No *atual, int chave, int debug) {
+    //função usada para verificar se uma chave
+    if (!atual) return NULL;
+
+    if (debug) {
+        printf("\n>> Visitando no:");
+        imprimeNo(atual);
+    }
+
+    int i = 0;
+
+    if (!atual->folha) {
+
+        while (i < atual->qtdChaves && chave >= atual->chaves[i]) {
+            if (atual->chaves[i] == chave) {
+                if (debug) printf(">> Chave %d encontrada na folha.\n", chave);
+                return atual;
+            }
+            i++;
+        }
+        if (atual->filhos[i] != NULL)
+        {
+            return buscaIndice(atual->filhos[i], chave, debug);
+        }
+        else
+            return NULL;
+    } else {
+
+        if (debug) printf(">> Chave %d não encontrada na folha.\n", chave);
+    return NULL;
+    }
+}
+
 /*===============================================================*/
 
 
@@ -458,14 +491,120 @@ int predecessor(No *src, int index)
     return aux->chaves[aux->qtdChaves-1];
 }
 
+void removerFilho(No *pai, No *filho)
+{
+    if (!pai || !filho)
+    {
+        printf("[ERRO]<removerFilho> Pai ou filho nulo\n");
+        return;
+    }
+
+    int idx = procuraIndiceFilho(filho, pai);
+    if (idx == BAD)
+    {
+        printf("[ERRO]<removerFilho> Filho não encontrado no pai\n");
+        return;
+    }
+
+    // Desloca filhos e chaves para a esquerda
+    for (int i = idx; i < pai->qtdChaves; i++)
+    {
+        pai->filhos[i] = pai->filhos[i + 1];
+        pai->chaves[i] = pai->chaves[i + 1];
+    }
+
+    // Último ponteiro de filho
+    pai->filhos[pai->qtdChaves] = pai->filhos[pai->qtdChaves + 1];
+    pai->filhos[pai->qtdChaves + 1] = NULL;
+
+    pai->qtdChaves--;
+}
+
+void reestruturarInterno(Arvore *arv, No *no) {
+    if (!no || no->folha || no->qtdChaves >= ORDEM)
+        return;
+
+    No *pai = no->pai;
+    if (!pai) return;
+
+    int idxNo = procuraIndiceFilho(no, pai);
+    No *irmaoEsq = (idxNo > 0) ? pai->filhos[idxNo - 1] : NULL;
+    No *irmaoDir = (idxNo < pai->qtdChaves) ? pai->filhos[idxNo + 1] : NULL;
+
+    // Redistribuir com irmão esquerdo
+    if (irmaoEsq && irmaoEsq->qtdChaves > ORDEM) {
+        for (int i = no->qtdChaves; i > 0; i--)
+            no->chaves[i] = no->chaves[i - 1];
+        no->chaves[0] = pai->chaves[idxNo - 1];
+        no->qtdChaves++;
+
+        pai->chaves[idxNo - 1] = irmaoEsq->chaves[irmaoEsq->qtdChaves - 1];
+        irmaoEsq->qtdChaves--;
+        return;
+    }
+
+    // Redistribuir com irmão direito
+    if (irmaoDir && irmaoDir->qtdChaves > ORDEM) {
+        no->chaves[no->qtdChaves++] = pai->chaves[idxNo];
+        pai->chaves[idxNo] = irmaoDir->chaves[0];
+
+        for (int i = 0; i < irmaoDir->qtdChaves - 1; i++)
+            irmaoDir->chaves[i] = irmaoDir->chaves[i + 1];
+        irmaoDir->qtdChaves--;
+        return;
+    }
+
+    // Fusão
+    if (irmaoEsq) {
+        irmaoEsq->chaves[irmaoEsq->qtdChaves++] = pai->chaves[idxNo - 1];
+        for (int i = 0; i < no->qtdChaves; i++)
+            irmaoEsq->chaves[irmaoEsq->qtdChaves++] = no->chaves[i];
+
+        removerFilho(pai, no);
+        free(no);
+
+        if (pai == arv->raiz && pai->qtdChaves == 0) {
+            for (int i = 0; i <= pai->qtdChaves; i++) {
+                if (pai->filhos[i]) {
+                    arv->raiz = pai->filhos[i];
+                    arv->raiz->pai = NULL;
+                    break;
+                }
+            }
+            free(pai);
+        } else if (pai->qtdChaves < ORDEM) {
+            reestruturarInterno(arv, pai);
+        }
+    } else if (irmaoDir) {
+        no->chaves[no->qtdChaves++] = pai->chaves[idxNo];
+        for (int i = 0; i < irmaoDir->qtdChaves; i++)
+            no->chaves[no->qtdChaves++] = irmaoDir->chaves[i];
+
+        removerFilho(pai, irmaoDir);
+        free(irmaoDir);
+
+        if (pai == arv->raiz && pai->qtdChaves == 0) {
+            for (int i = 0; i <= pai->qtdChaves; i++) {
+                if (pai->filhos[i]) {
+                    arv->raiz = pai->filhos[i];
+                    arv->raiz->pai = NULL;
+                    break;
+                }
+            }
+            free(pai);
+        } else if (pai->qtdChaves < ORDEM) {
+            reestruturarInterno(arv, pai);
+        }
+    }
+}
+
+
 void deletarChave(Arvore *arv, int chave)
 {
-    No *pai;
     No *folha = busca(arv->raiz, chave, 0);
-
     if (!folha)
     {
-        printf("\n<deletarChave> Nao foi possivel encontrar a chave na arvore.\n");
+        printf("\n[ERRO] <deletarChave> Chave %d não encontrada na árvore.\n", chave);
         return;
     }
 
@@ -482,100 +621,134 @@ void deletarChave(Arvore *arv, int chave)
 
     if (!chaveEncontrada)
     {
-        printf("\n<deletarChave> Chave %d nao encontrada no nó folha.\n", chave);
+        printf("\n[ERRO] <deletarChave> Chave %d não está no nó folha.\n", chave);
         return;
     }
 
-    // CASO I - Chave presente apenas no nó folha e ele tem mais que o mínimo
-    if (folha->folha)
+    // === CASO 1: Folha com mais que ORDEM chaves
+    if (folha->qtdChaves > ORDEM)
     {
-        if (folha->pai != NULL)
-        {
-            pai = folha->pai;
+        removerChaveFolha(folha, chave);
+        printf("\n[CASO I] Chave %d removida de folha com > ORDEM chaves.\n", chave);
+        return;
+    }
 
-            int estaEmIndice = 0;
-            for (int i = 0; i < pai->qtdChaves; i++)
+    // === CASO 2: Folha com exatamente ORDEM chaves
+    No *pai = folha->pai;
+    if (!pai)
+    {
+        // Caso especial: raiz é folha
+        removerChaveFolha(folha, chave);
+
+        if (folha->qtdChaves == 0)
+        {
+            free(folha);
+            arv->raiz = NULL;
+            printf("\n[CASO RAIZ-FOLHA] Chave %d removida. Árvore agora está vazia.\n", chave);
+        }
+        else
+        {
+            printf("\n[CASO RAIZ-FOLHA] Chave %d removida da raiz folha. Restam %d chaves.\n", chave, folha->qtdChaves);
+        }
+        return;
+    }
+
+    // Procurar irmãos para redistribuição ou fusão
+    int idxFilho = procuraIndiceFilho(folha, pai);
+    No *irmaoEsq = (idxFilho > 0) ? pai->filhos[idxFilho - 1] : NULL;
+    No *irmaoDir = (idxFilho < pai->qtdChaves) ? pai->filhos[idxFilho + 1] : NULL;
+
+    removerChaveFolha(folha, chave);
+
+    // === CASO II-A: Redistribuição com irmão esquerdo
+    if (irmaoEsq && irmaoEsq->qtdChaves > ORDEM)
+    {
+        int chaveEmprestada = irmaoEsq->chaves[irmaoEsq->qtdChaves - 1];
+
+        removerChaveFolha(irmaoEsq, chaveEmprestada);
+        addChaveEmFolha(folha, chaveEmprestada);
+
+        // Atualiza separador no pai apenas se necessário
+        if (folha->chaves[0] < pai->chaves[idxFilho - 1])
+            pai->chaves[idxFilho - 1] = folha->chaves[0];
+
+        printf("\n[CASO II-A] Redistribuição com irmão esquerdo. Chave emprestada: %d\n", chaveEmprestada);
+        return;
+    }
+
+    // === CASO II-B: Redistribuição com irmão direito
+    if (irmaoDir && irmaoDir->qtdChaves > ORDEM)
+    {
+        int chaveEmprestada = irmaoDir->chaves[0];
+
+        removerChaveFolha(irmaoDir, chaveEmprestada);
+        addChaveEmFolha(folha, chaveEmprestada);
+
+        // Atualiza separador no pai com nova menor do irmão direito
+        pai->chaves[idxFilho] = irmaoDir->chaves[0];
+
+        printf("\n[CASO II-B] Redistribuição com irmão direito. Chave emprestada: %d\n", chaveEmprestada);
+        return;
+    }
+
+    // === CASO III: Fusão com irmão (irá reestruturar recursivamente)
+    if (irmaoEsq && (irmaoEsq->qtdChaves + folha->qtdChaves <= MAX_CHAVES))
+    {
+        // Move chaves da folha para o irmão esquerdo
+        for (int i = 0; i < folha->qtdChaves; i++)
+            irmaoEsq->chaves[irmaoEsq->qtdChaves++] = folha->chaves[i];
+
+        // Remove o ponteiro da folha do pai
+        removerFilho(pai, folha);
+        free(folha);
+
+        // Atualiza índice no pai
+        if (idxFilho - 1 >= 0 && idxFilho - 1 < pai->qtdChaves)
+            pai->chaves[idxFilho - 1] = irmaoEsq->chaves[0];
+
+        printf("\n[CASO III] Fusão com irmão esquerdo realizada.\n");
+    }
+    else if (irmaoDir && (folha->qtdChaves + irmaoDir->qtdChaves <= MAX_CHAVES))
+    {
+        for (int i = 0; i < irmaoDir->qtdChaves; i++)
+            folha->chaves[folha->qtdChaves++] = irmaoDir->chaves[i];
+
+        removerFilho(pai, irmaoDir);
+        free(irmaoDir);
+
+        // Atualiza índice no pai
+        if (idxFilho < pai->qtdChaves)
+            pai->chaves[idxFilho] = folha->chaves[0];
+
+        printf("\n[CASO III] Fusão com irmão direito realizada.\n");
+    }
+
+    // Se o pai ficou com menos do que ORDEM chaves, propaga reestruturação
+    if (pai->qtdChaves < ORDEM)
+    {
+        if (pai == arv->raiz && pai->qtdChaves == 0)
+        {
+            // Se a raiz ficou vazia, ajusta a nova raiz
+            for (int i = 0; i <= pai->qtdChaves; i++)
             {
-                if (pai->chaves[i] == chave)
+                if (pai->filhos[i])
                 {
-                    estaEmIndice = 1;
+                    arv->raiz = pai->filhos[i];
+                    arv->raiz->pai = NULL;
                     break;
                 }
             }
-
-            if (!estaEmIndice && folha->qtdChaves > ORDEM)
-            {
-                if (removerChaveFolha(folha, chave) == BAD)
-                {
-                    printf("\n<removerChaveFolha> Erro ao remover chave %d do nó folha %p\n", chave, folha);
-                }
-                else
-                {
-                    printf("\nChave %d removida com sucesso do nó folha %p\n", chave, folha);
-                }
-                return;
-            }
-            else //CASO II - Há um número mínimo exato de chaves no nó == ORDEM.
-            {
-                pai = folha->pai;
-                int indiceDoFilho = procuraIndiceFilho(folha, pai);
-
-                No *irmaoEsq = (indiceDoFilho > 0) ? pai->filhos[indiceDoFilho - 1] : NULL;
-                No *irmaoDir = (indiceDoFilho < pai->qtdChaves) ? pai->filhos[indiceDoFilho + 1] : NULL;
-
-                removerChaveFolha(folha, chave);
-
-                if (irmaoEsq && irmaoEsq->qtdChaves > ORDEM)
-                {
-                    int chaveEmprestada = irmaoEsq->chaves[irmaoEsq->qtdChaves - 1];
-                    addChaveEmFolha(folha, chaveEmprestada);
-                    removerChaveFolha(irmaoEsq, chaveEmprestada);
-
-                    // Atualiza índice no pai com a nova menor chave do 'folha'
-                    pai->chaves[indiceDoFilho - 1] = folha->chaves[0];
-                }
-                else if (irmaoDir && irmaoDir->qtdChaves > ORDEM)
-                {
-                    int chaveEmprestada = irmaoDir->chaves[0];
-                    addChaveEmFolha(folha, chaveEmprestada);
-                    removerChaveFolha(irmaoDir, chaveEmprestada);
-
-                    // Atualiza índice no pai com a nova menor chave do irmão direito
-                    pai->chaves[indiceDoFilho] = irmaoDir->chaves[0];
-                }
-                else
-                {
-                    printf("<redistribuicao> Nenhum irmão com chaves para emprestar\n");
-                    // aqui viria o passo de fusão, que seria o "Caso III"
-                }
-            }
+            free(pai);
+            printf("\n[RAIZ] A raiz antiga foi eliminada. Nova raiz definida.\n");
         }
-        else// É FOLHA E RAIZ
+        else
         {
-            // Caso a raiz seja folha (único nó na árvore)
-            if (folha->qtdChaves > 1)
-            {
-                if (removerChaveFolha(folha, chave) == BAD)
-                {
-                    printf("\n<removerChaveFolha> Erro ao remover chave %d da raiz folha\n", chave);
-                }
-                else
-                {
-                    printf("\nChave %d removida com sucesso da raiz folha %p\n", chave, folha);
-                }
-                return;
-            }
-            else
-            {
-                // Última chave da raiz (único elemento na árvore)
-                arv->raiz = NULL;
-                free(folha);
-                printf("\n[!] Chave %d removida. Arvore agora esta vazia.\n", chave);
-                return;
-            }
+            reestruturarInterno(arv, pai);
         }
     }
 }
+
+
 
 /*============================================================*/
 
