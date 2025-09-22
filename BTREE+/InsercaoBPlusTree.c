@@ -627,13 +627,7 @@ void deletarChave(Arvore *arv, int chave)
     }
 
 
-    //implementar concatenação arvore b+: caso nao possa pegar emprestado dos irmaos,
-    //junta as duas folhas
-    //arvore b+ passo 1: a chave presente no nó pai e que dividia as duas folhas é simplesmente apagada (só servia de indice)
-    //passo 2: reorganiza o nó pai, (uma chave foi apagada entao as chaves e filhos a partir da posicao da chave apagada voltam uma casa
-    //passo 3: verifica se o nó pai ficou com qtdChaves< Ordem (nó interno de indice)tenha ficado com qtdChaves < ORDEM, deve realizar uma concatenação assim como na arvoreb
-    //concatenação arvore b: junta dois nós com atual->qtdChaves + irmao->qtdChaves < ORDEM ( a soma das duas chaves precisa ser menor que a ORDEM, pois vai descer a chave de indice que separa os dois irmaos
-    //se nao for possivel realizar a concatenação de arvore b, também reorganiza pegando emprestado dos irmaos.
+        //aaa
 
 }
 
