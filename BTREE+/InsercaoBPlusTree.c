@@ -569,11 +569,29 @@ int verificaChave(No *atual, int chave)
     return chaveEncontrada;
 };
 
+void merge(No *pai, No *esquerda, No *direita) //sempre será passado para a esquerda
+{
+
+    if(esquerda->folha)
+    {
+        for(int i =0; i <direita->qtdChaves;i++)
+        {
+            addChaveEmFolha(esquerda,direita->chaves[i]);
+        }
+
+        int indiceDireita = procuraIndiceFilho(direita,pai);
+        int chaveSeparadora =
+    }
+
+
+
+}
+
 int organizaArvore(Arvore *arv)
 {
    int organizou = 0;
 
-    if(!arv)
+    if(!arv || !arv->raiz)
     {
         printf("\n<organizaArvore> ARVORE NULL");
     }
@@ -598,14 +616,41 @@ int organizaArvore(Arvore *arv)
 
     int posicaoFilho = procuraIndiceFilho(retorno,pai);
 
+   if (posicaoFilho > 0) {
 
-    // PRA UNIR 2 NÓS A SOMA DAS CHAVES TEM QUE SER < 2xORDEM
-    if(!pai->filhos[posicaoFilho-1]) //TESTA SE TEM IRMAO A ESQUERDA
-    {
-        No *irmaoEsquerda = pai->filhos[posicaoFilho-1];
+        No *irmaoEsquerda = pai->filhos[posicaoFilho - 1];
 
+        if (irmaoEsquerda && (irmaoEsquerda->qtdChaves + retorno->qtdChaves) < MAX_CHAVES) {
+            if (retorno->folha) {
+                merge(pai, posicaoFilho - 1); // junta irmaoEsquerda + retorno
+            } else {
+                mergeNos(pai, posicaoFilho - 1);
+            }
+            return 1;
+        }
     }
+
+    // Se não conseguiu à esquerda, tenta com irmão à direita
+    if (posicaoFilho < pai->qtdChaves) {
+
+        No *irmaoDireita = pai->filhos[posicaoFilho + 1];
+
+        if (irmaoDireita && (irmaoDireita->qtdChaves + retorno->qtdChaves) < MAX_CHAVES) {
+            if (retorno->folha) {
+             //   mergeFolhas(pai, posicaoFilho); // junta retorno + irmaoDireita
+
+            } else {
+               // mergeNos(pai, posicaoFilho);
+            }
+            return 1;
+        }
+    }
+
+    // Nenhum merge possível
+    return 0;
 }
+
+
 
 void deletarChave(Arvore *arv, int chave)
 {
