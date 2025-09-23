@@ -187,6 +187,40 @@ No *buscaIndice(No *atual, int chave, int debug) {
     }
 }
 
+
+No *buscaMerge(No *atual, int debug) {
+    if (!atual) return NULL;
+
+    if (debug) {
+        printf("\n>><buscaMerge> Visitando no:");
+        imprimeNo(atual);
+    }
+
+    // Verifica se o nó atual precisa de merge
+    if (atual->qtdChaves < ORDEM) {
+        if (debug) {
+            if (atual->folha)
+                printf(">> No FOLHA: %p precisa de merge.\n", atual);
+            else
+                printf(">> No INTERNO: %p precisa de merge.\n", atual);
+        }
+        return atual;
+    }
+
+    // Se for nó interno, percorre os filhos recursivamente
+    if (!atual->folha) {
+        for (int i = 0; i <= atual->qtdChaves; i++) { // percorre todos os filhos
+            if (atual->filhos[i]) {
+                No *resultado = buscaMerge(atual->filhos[i], debug);
+                if (resultado) return resultado;
+            }
+        }
+    }
+
+    // Se chegou aqui, nenhum filho precisa de merge
+    return NULL;
+}
+
 /*===============================================================*/
 
 
@@ -531,8 +565,47 @@ int verificaChave(No *atual, int chave)
             break;
         }
     }
+
     return chaveEncontrada;
 };
+
+int organizaArvore(Arvore *arv)
+{
+   int organizou = 0;
+
+    if(!arv)
+    {
+        printf("\n<organizaArvore> ARVORE NULL");
+    }
+
+    //funcao que busca nó com qtdChaves < ORDEM
+
+    No *retorno = buscaMerge(arv->raiz);
+
+    if(!retorno)
+    {
+        printf("<organizaArvore> Nenhum no precisando de merge");
+        return 0;
+    }
+
+
+    if(!retorno->pai)//EH RAIZ E NAO PRECISA DE MERGE (RAIZ PODE TER QTDCHAVES < ORDEM
+    {
+        return 0;
+    }
+
+    No *pai = retorno->pai;
+
+    int posicaoFilho = procuraIndiceFilho(retorno,pai);
+
+
+    // PRA UNIR 2 NÓS A SOMA DAS CHAVES TEM QUE SER < 2xORDEM
+    if(!pai->filhos[posicaoFilho-1]) //TESTA SE TEM IRMAO A ESQUERDA
+    {
+        No *irmaoEsquerda = pai->filhos[posicaoFilho-1];
+
+    }
+}
 
 void deletarChave(Arvore *arv, int chave)
 {
@@ -627,7 +700,10 @@ void deletarChave(Arvore *arv, int chave)
     }
 
 
-        //aaa
+    //IRMAO A DIREITA E A ESQUERDA TEM QTDCHAVES == ORDEM, REMOVE E DISPARA FUNCAO PRA ORGANIZAR
+     removerChaveFolha(folha,chave);
+
+     organizaArvore(arv);
 
 }
 
