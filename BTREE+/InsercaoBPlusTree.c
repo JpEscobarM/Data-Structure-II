@@ -18,7 +18,7 @@ typedef struct
 
     struct no *prox;
 
-}No;
+} No;
 
 
 typedef struct
@@ -27,12 +27,13 @@ typedef struct
     No *raiz;
 
 
-}Arvore;
+} Arvore;
 
 
 void imprimeNo(No *imprimir)
 {
-    if (!imprimir) {
+    if (!imprimir)
+    {
         printf("\n[!] No nulo\n");
         return;
     }
@@ -42,11 +43,15 @@ void imprimeNo(No *imprimir)
     printf("\n--------------------");
 
 
-    if (imprimir->qtdChaves == 0) {
+    if (imprimir->qtdChaves == 0)
+    {
         printf("\nChaves: [vazio]");
-    } else {
+    }
+    else
+    {
         printf("\nChaves: [");
-        for (int i = 0; i < imprimir->qtdChaves; i++) {
+        for (int i = 0; i < imprimir->qtdChaves; i++)
+        {
             printf("%d", imprimir->chaves[i]);
             if (i < imprimir->qtdChaves - 1) printf(", ");
         }
@@ -56,17 +61,21 @@ void imprimeNo(No *imprimir)
     printf("\nPai: %p", imprimir->pai);
 
 
-    if (!imprimir->folha && imprimir->filhos != NULL) {
+    if (!imprimir->folha && imprimir->filhos != NULL)
+    {
         printf("\nFilhos:");
 
         int j = 0;
-        while (j < MAX_FILHOS + 1 && imprimir->filhos[j] != NULL) {
+        while (j < MAX_FILHOS + 1 && imprimir->filhos[j] != NULL)
+        {
             printf("\n   Filho[%d] -> %p", j, (void *)imprimir->filhos[j]);
             j++;
         }
 
         printf("\nTotal de filhos: %d", j);
-    } else {
+    }
+    else
+    {
         printf("\nEste no e uma folha (sem filhos)");
     }
 
@@ -75,7 +84,8 @@ void imprimeNo(No *imprimir)
 
 /*==========================CRIAR NÓ===========*/
 
-No *criaNo(No *pai, int folha, int debug){
+No *criaNo(No *pai, int folha, int debug)
+{
     No *novo = malloc(sizeof(No));
     if(debug) printf("\nENDERECO DO NO CRIADO: %p", novo);
 
@@ -99,7 +109,7 @@ No *criaNo(No *pai, int folha, int debug){
 
         novo->filhos = malloc(sizeof(No*)*(MAX_FILHOS+1)); //+1 para overflow de filho
 
-        for(int i=0; i < MAX_FILHOS+1;i++)
+        for(int i=0; i < MAX_FILHOS+1; i++)
         {
             novo->filhos[i]= NULL;
         }
@@ -108,7 +118,7 @@ No *criaNo(No *pai, int folha, int debug){
 
     if(debug) imprimeNo(novo);
 
-return novo;
+    return novo;
 }
 
 
@@ -117,19 +127,23 @@ return novo;
 
 
 /*========================BUSCA=========================*/
-No *busca(No *atual, int chave, int debug) {
+No *busca(No *atual, int chave, int debug)
+{
     if (!atual) return NULL;
 
-    if (debug) {
+    if (debug)
+    {
         printf("\n>> Visitando no:");
         imprimeNo(atual);
     }
 
     int i = 0;
 
-    if (!atual->folha) {
+    if (!atual->folha)
+    {
 
-        while (i < atual->qtdChaves && chave >= atual->chaves[i]) {
+        while (i < atual->qtdChaves && chave >= atual->chaves[i])
+        {
             i++;
         }
 
@@ -138,10 +152,14 @@ No *busca(No *atual, int chave, int debug) {
             return busca(atual->filhos[i], chave, debug);
         else
             return NULL;
-    } else {
+    }
+    else
+    {
 
-        for (i = 0; i < atual->qtdChaves; i++) {
-            if (atual->chaves[i] == chave) {
+        for (i = 0; i < atual->qtdChaves; i++)
+        {
+            if (atual->chaves[i] == chave)
+            {
                 if (debug) printf(">> Chave %d encontrada na folha.\n", chave);
                 return atual;
             }
@@ -154,21 +172,26 @@ No *busca(No *atual, int chave, int debug) {
     }
 }
 
-No *buscaIndice(No *atual, int chave, int debug) {
+No *buscaIndice(No *atual, int chave, int debug)
+{
     //função usada para verificar se uma chave
     if (!atual) return NULL;
 
-    if (debug) {
+    if (debug)
+    {
         printf("\n>> Visitando no:");
         imprimeNo(atual);
     }
 
     int i = 0;
 
-    if (!atual->folha) {
+    if (!atual->folha)
+    {
 
-        while (i < atual->qtdChaves && chave >= atual->chaves[i]) {
-            if (atual->chaves[i] == chave) {
+        while (i < atual->qtdChaves && chave >= atual->chaves[i])
+        {
+            if (atual->chaves[i] == chave)
+            {
                 if (debug) printf(">> Chave %d encontrada na folha.\n", chave);
                 return atual;
             }
@@ -180,25 +203,31 @@ No *buscaIndice(No *atual, int chave, int debug) {
         }
         else
             return NULL;
-    } else {
+    }
+    else
+    {
 
         if (debug) printf(">> Chave %d não encontrada na folha.\n", chave);
-    return NULL;
+        return NULL;
     }
 }
 
 
-No *buscaMerge(No *atual, int debug) {
+No *buscaMerge(No *atual, int debug)
+{
     if (!atual) return NULL;
 
-    if (debug) {
+    if (debug)
+    {
         printf("\n>><buscaMerge> Visitando no:");
         imprimeNo(atual);
     }
 
     // Verifica se o nó atual precisa de merge
-    if (atual->qtdChaves < ORDEM) {
-        if (debug) {
+    if (atual->qtdChaves < ORDEM)
+    {
+        if (debug)
+        {
             if (atual->folha)
                 printf(">> No FOLHA: %p precisa de merge.\n", atual);
             else
@@ -208,9 +237,12 @@ No *buscaMerge(No *atual, int debug) {
     }
 
     // Se for nó interno, percorre os filhos recursivamente
-    if (!atual->folha) {
-        for (int i = 0; i <= atual->qtdChaves; i++) { // percorre todos os filhos
-            if (atual->filhos[i]) {
+    if (!atual->folha)
+    {
+        for (int i = 0; i <= atual->qtdChaves; i++)   // percorre todos os filhos
+        {
+            if (atual->filhos[i])
+            {
                 No *resultado = buscaMerge(atual->filhos[i], debug);
                 if (resultado) return resultado;
             }
@@ -301,11 +333,11 @@ void addChaveEmNoInterno(No *interno, int chave, No *filhoEsq, No *filhoDir)
     interno->qtdChaves++;
     if(!interno->folha)
     {
-    interno->filhos[i] = filhoEsq;
-    interno->filhos[i+1] = filhoDir;
+        interno->filhos[i] = filhoEsq;
+        interno->filhos[i+1] = filhoDir;
 
-    filhoEsq->pai = interno;
-    filhoDir->pai = interno;
+        filhoEsq->pai = interno;
+        filhoDir->pai = interno;
     }
 }
 
@@ -329,7 +361,8 @@ void splitNoInterno(Arvore *arv,No *atual)
     for (i = meio + 1; i <= atual->qtdChaves; i++)
     {
         novoIrmao->filhos[i - (meio + 1)] = atual->filhos[i];
-        if (novoIrmao->filhos[i - (meio + 1)]) {
+        if (novoIrmao->filhos[i - (meio + 1)])
+        {
             No *filho = novoIrmao->filhos[i - (meio + 1)];
             filho->pai = novoIrmao;
         }
@@ -385,7 +418,7 @@ void splitFolha(Arvore *arv, No *atual)
     if(atual->prox != NULL)
     {
 
-       novoIrmao->prox = atual->prox; //novo irmao a direita mantem o proximo que ja estava
+        novoIrmao->prox = atual->prox; //novo irmao a direita mantem o proximo que ja estava
 
     }
     atual->prox = novoIrmao; // atual aponta pro novo irmao
@@ -423,7 +456,7 @@ void inserir(Arvore *arv,int chave,int debug)
         return;
     }
 
-    for(int i = 0 ; i < retorno->qtdChaves;i++)
+    for(int i = 0 ; i < retorno->qtdChaves; i++)
     {
         if(retorno->chaves[i] == chave)
         {
@@ -569,28 +602,125 @@ int verificaChave(No *atual, int chave)
     return chaveEncontrada;
 };
 
-void merge(No *pai, No *esquerda, No *direita) //sempre será passado para a esquerda
+
+void shiftParaEsquerda(No *atual, int posicao)
 {
+    if (!atual) return;
+
+
+    for (int i = posicao; i < atual->qtdChaves - 1; i++)
+    {
+        atual->chaves[i] = atual->chaves[i + 1];
+    }
+
+
+    atual->chaves[atual->qtdChaves - 1] = BAD;
+
+
+    if (!atual->folha)
+    {
+        for (int i = posicao + 2; i < atual->qtdChaves + 1; i++)
+        {
+            // posicao = índice da chave separadora
+            // devemos remover chaves[posicao] e filhos[posicao + 1]
+            // então começamos a mover filhos a partir de posicao + 2 para a esquerda
+            atual->filhos[i - 1] = atual->filhos[i];
+        }
+
+        atual->filhos[atual->qtdChaves] = NULL;
+    }
+
+
+    atual->qtdChaves--;
+}
+
+void mergeComEsquerda(No *pai, No *esquerda, No *direita) //sempre será passado para a esquerda
+{
+    if(!pai || !esquerda || !direita)
+    {
+        printf("\n<merge>No Null na funcao\n");
+        return;
+    }
+
+
+    No *aux;
 
     if(esquerda->folha)
     {
-        for(int i =0; i <direita->qtdChaves;i++)
+        for(int i =0; i <direita->qtdChaves; i++)
         {
             addChaveEmFolha(esquerda,direita->chaves[i]);
         }
 
         int indiceDireita = procuraIndiceFilho(direita,pai);
-        int chaveSeparadora =
-    }
+        int chaveSeparadora = indiceDireita-1;
 
+        shiftParaEsquerda(pai,chaveSeparadora);
+
+        esquerda->prox = direita->prox;
+
+        free(direita->chaves);
+        free(direita->filhos);
+        free(direita);
+    }
+    else
+    {
+
+
+        int indiceDireita = procuraIndiceFilho(direita,pai);
+        int chaveSeparadora = indiceDireita-1;
+
+
+
+
+        esquerda->chaves[esquerda->qtdChaves] = pai->chaves[chaveSeparadora]; //QUANDO É NO INTERNO A CHAVE SEPARADORA DESCE ASSIM COMO EM ARVORE B
+        esquerda->qtdChaves++;
+
+        shiftParaEsquerda(pai,chaveSeparadora);
+
+
+        esquerda->filhos[esquerda->qtdChaves] = direita->filhos[0];
+        aux = direita->filhos[0];
+        if (aux) aux->pai = esquerda;
+
+        for(int i = 0 ; i < direita->qtdChaves; i ++)
+        {
+            esquerda->chaves[esquerda->qtdChaves] = direita->chaves[i];
+            esquerda->qtdChaves++;
+            esquerda->filhos[esquerda->qtdChaves] = direita->filhos[i+1];
+            aux=direita->filhos[i+1];
+            if (aux) aux->pai = esquerda;
+
+        }
+
+
+        free(direita->chaves);
+        free(direita->filhos);
+        free(direita);
+    }
 
 
 }
 
+void promoverNovoRaiz(Arvore *arv, No *paiAntigo)
+{
+
+
+    No *novaRaiz = paiAntigo->filhos[0];
+
+    if (novaRaiz)
+        novaRaiz->pai = NULL;
+
+    free(paiAntigo->chaves);
+    free(paiAntigo->filhos);
+    free(paiAntigo);
+    arv->raiz = novaRaiz;
+}
+
 int organizaArvore(Arvore *arv)
 {
-   int organizou = 0;
-
+    int organizou = 0;
+    No *aux;
     if(!arv || !arv->raiz)
     {
         printf("\n<organizaArvore> ARVORE NULL");
@@ -598,7 +728,7 @@ int organizaArvore(Arvore *arv)
 
     //funcao que busca nó com qtdChaves < ORDEM
 
-    No *retorno = buscaMerge(arv->raiz);
+    No *retorno = buscaMerge(arv->raiz,1);
 
     if(!retorno)
     {
@@ -616,37 +746,52 @@ int organizaArvore(Arvore *arv)
 
     int posicaoFilho = procuraIndiceFilho(retorno,pai);
 
-   if (posicaoFilho > 0) {
+    if (posicaoFilho > 0)
+    {
 
         No *irmaoEsquerda = pai->filhos[posicaoFilho - 1];
 
-        if (irmaoEsquerda && (irmaoEsquerda->qtdChaves + retorno->qtdChaves) < MAX_CHAVES) {
-            if (retorno->folha) {
-                merge(pai, posicaoFilho - 1); // junta irmaoEsquerda + retorno
-            } else {
-                mergeNos(pai, posicaoFilho - 1);
+        if (irmaoEsquerda && (irmaoEsquerda->qtdChaves + retorno->qtdChaves) < MAX_CHAVES)
+        {
+            mergeComEsquerda(pai,irmaoEsquerda,retorno);
+
+            if (!pai->pai && pai->qtdChaves == 0)
+            {
+                promoverNovoRaiz(arv, pai);
             }
+
             return 1;
         }
     }
 
-    // Se não conseguiu à esquerda, tenta com irmão à direita
-    if (posicaoFilho < pai->qtdChaves) {
+
+    if (posicaoFilho < pai->qtdChaves)
+    {
 
         No *irmaoDireita = pai->filhos[posicaoFilho + 1];
 
-        if (irmaoDireita && (irmaoDireita->qtdChaves + retorno->qtdChaves) < MAX_CHAVES) {
-            if (retorno->folha) {
-             //   mergeFolhas(pai, posicaoFilho); // junta retorno + irmaoDireita
+        if (irmaoDireita && (irmaoDireita->qtdChaves + retorno->qtdChaves) < MAX_CHAVES)
+        {
 
-            } else {
-               // mergeNos(pai, posicaoFilho);
+            mergeComEsquerda(pai,retorno,irmaoDireita);
+
+            aux = pai->filhos[1];
+
+            if (!pai->pai && pai->qtdChaves == 0)
+            {
+                promoverNovoRaiz(arv, pai);
             }
+
             return 1;
         }
+
+
+
     }
 
-    // Nenhum merge possível
+
+    printf("\n<orgaizaArvore> POR ALGUM MOTIVO NENHUM MERGE FOI POSSIVEL E O NO NAO ERA RAIZ\n");
+
     return 0;
 }
 
@@ -672,7 +817,7 @@ void deletarChave(Arvore *arv, int chave)
         printf("\n[ERRO] <deletarChave> Chave %d não está no nó folha.\n", chave);
         return;
     }
-       // folha com ordem chaves e é raiz (unico caso em que folha ou nó podem ter qtdChaves < ORDEM
+    // folha com ordem chaves e é raiz (unico caso em que folha ou nó podem ter qtdChaves < ORDEM
     No *pai = folha->pai;
     if (!pai)
     {
@@ -708,9 +853,9 @@ void deletarChave(Arvore *arv, int chave)
     No *irmaoEsq = (idxFilho > 0) ? pai->filhos[idxFilho - 1] : NULL;
     No *irmaoDir = (idxFilho < pai->qtdChaves) ? pai->filhos[idxFilho + 1] : NULL;
 
-     printf("%\n\tENDERECO DO IRMAO ESQUERDO: %p", irmaoEsq);
+    printf("%\n\tENDERECO DO IRMAO ESQUERDO: %p", irmaoEsq);
 
-     printf("%\tENDERECO DO IRMAO DIREITO: %p\n", irmaoDir);
+    printf("%\tENDERECO DO IRMAO DIREITO: %p\n", irmaoDir);
 
 
 
@@ -723,14 +868,14 @@ void deletarChave(Arvore *arv, int chave)
         removerChaveFolha(irmaoEsq, chaveEmprestada);
         addChaveEmFolha(folha, chaveEmprestada);
 
-         pai->chaves[idxFilho-1] = chaveEmprestada; //chave emprestada pois na posicao  só idxFilho só podem existir valores
+        pai->chaves[idxFilho-1] = chaveEmprestada; //chave emprestada pois na posicao  só idxFilho só podem existir valores
 
-    printf("\n[CASO II-B] Redistribuição com irmão esquerdo. Chave emprestada: %d\n", chaveEmprestada);
+        printf("\n[CASO II-B] Redistribuição com irmão esquerdo. Chave emprestada: %d\n", chaveEmprestada);
         return;
     }
     else if (irmaoDir && irmaoDir->qtdChaves > ORDEM)
     {
-         removerChaveFolha(folha, chave);
+        removerChaveFolha(folha, chave);
 
         int chaveEmprestada = irmaoDir->chaves[0]; //menor chave do irmao direito
 
@@ -745,10 +890,16 @@ void deletarChave(Arvore *arv, int chave)
     }
 
 
-    //IRMAO A DIREITA E A ESQUERDA TEM QTDCHAVES == ORDEM, REMOVE E DISPARA FUNCAO PRA ORGANIZAR
-     removerChaveFolha(folha,chave);
+    //NAO FOI POSSIVEL REDISTRIBUIR COM NENHUM IRMAO, ENTAO SIMPLESMENTE APAGA A CHAVE E REORGANIZA A ARVORE REALZIANDO OS MERGES
+    removerChaveFolha(folha,chave);
 
-     organizaArvore(arv);
+    while(organizaArvore(arv))
+    {
+
+        printf("\nCHAMOU FUNCAO DE MERGE\n");
+    }
+
+
 
 }
 
@@ -760,7 +911,8 @@ void deletarChave(Arvore *arv, int chave)
 /*=====================FUNÇÕES PARA TESTE======================*/
 
 
-void testeInsercaoSplit() {
+void testeInsercaoSplit()
+{
     printf("\n==== INICIANDO TESTE DE INSERCAO COM SPLIT NA RAIZ ====\n");
 
     Arvore arv;
@@ -769,23 +921,27 @@ void testeInsercaoSplit() {
     int chavesParaInserir[] = {10, 20, 5, 15, 25};
     int qtd = sizeof(chavesParaInserir) / sizeof(chavesParaInserir[0]);
 
-    for (int i = 0; i < qtd; i++) {
+    for (int i = 0; i < qtd; i++)
+    {
         printf("\n>> Inserindo chave %d\n", chavesParaInserir[i]);
         inserir(&arv, chavesParaInserir[i], 0);
     }
 
     printf("\n==== ESTRUTURA FINAL DA ARVORE ====\n");
     imprimeNo(arv.raiz);
-    if (arv.raiz->filhos[0]) {
+    if (arv.raiz->filhos[0])
+    {
         imprimeNo(arv.raiz->filhos[0]);
     }
-    if (arv.raiz->filhos[1]) {
+    if (arv.raiz->filhos[1])
+    {
         imprimeNo(arv.raiz->filhos[1]);
     }
 
     // Confirma se folhas estão encadeadas
     No *folha = arv.raiz->filhos[0];
-    while (folha != NULL) {
+    while (folha != NULL)
+    {
         printf("\n[ENCAD] Folha %p -> prox: %p\n", folha, folha->prox);
         folha = folha->prox;
     }
@@ -794,37 +950,45 @@ void testeInsercaoSplit() {
 }
 
 
-void imprimeArvore(No *no, int nivel) {
+void imprimeArvore(No *no, int nivel)
+{
     if (!no) return;
 
     printf("\nNível %d | %s | End: %p | Pai: %p\n", nivel, no->folha ? "Folha" : "Interno", no, no->pai);
     printf("Chaves: ");
-    for (int i = 0; i < no->qtdChaves; i++) {
+    for (int i = 0; i < no->qtdChaves; i++)
+    {
         printf("%d ", no->chaves[i]);
     }
     printf("\n");
 
-    if (!no->folha) {
-        for (int i = 0; i <= no->qtdChaves; i++) {
+    if (!no->folha)
+    {
+        for (int i = 0; i <= no->qtdChaves; i++)
+        {
             imprimeArvore(no->filhos[i], nivel + 1);
         }
     }
 }
 
-void verificaEncadeamentoFolhas(No *raiz) {
+void verificaEncadeamentoFolhas(No *raiz)
+{
     if (!raiz) return;
 
     // Navega até a folha mais à esquerda
     No *folha = raiz;
-    while (!folha->folha) {
+    while (!folha->folha)
+    {
         folha = folha->filhos[0];
     }
 
     printf("\n--- Verificando encadeamento das folhas ---\n");
 
-    while (folha != NULL) {
+    while (folha != NULL)
+    {
         printf("Folha %p: ", folha);
-        for (int i = 0; i < folha->qtdChaves; i++) {
+        for (int i = 0; i < folha->qtdChaves; i++)
+        {
             printf("%d ", folha->chaves[i]);
         }
         printf("-> %p\n", folha->prox);
@@ -832,7 +996,8 @@ void verificaEncadeamentoFolhas(No *raiz) {
     }
 }
 
-void testeInsercaoSplit2() {
+void testeInsercaoSplit2()
+{
     printf("\n==== INICIANDO TESTE DE INSERÇÃO COM SPLITS ====\n");
 
     Arvore arv;
@@ -841,7 +1006,8 @@ void testeInsercaoSplit2() {
     int chavesParaInserir[] = {10, 20, 5, 15, 25, 30, 7, 50, 45, 60, 70, 40, 3, 2, 4};
     int qtd = sizeof(chavesParaInserir) / sizeof(chavesParaInserir[0]);
 
-    for (int i = 0; i < qtd; i++) {
+    for (int i = 0; i < qtd; i++)
+    {
         printf("\n>> Inserindo chave %d\n", chavesParaInserir[i]);
         inserir(&arv, chavesParaInserir[i], 0);
     }
@@ -854,18 +1020,24 @@ void testeInsercaoSplit2() {
 
     printf("\n==== BUSCA VALIDANDO TODAS AS CHAVES INSERIDAS ====\n");
 
-    for (int i = 0; i < qtd; i++) {
+    for (int i = 0; i < qtd; i++)
+    {
         No *n = busca(arv.raiz, chavesParaInserir[i], 0);
         int achou = 0;
-        for (int j = 0; j < n->qtdChaves; j++) {
-            if (n->chaves[j] == chavesParaInserir[i]) {
+        for (int j = 0; j < n->qtdChaves; j++)
+        {
+            if (n->chaves[j] == chavesParaInserir[i])
+            {
                 achou = 1;
                 break;
             }
         }
-        if (achou) {
+        if (achou)
+        {
             printf("[OK] Chave %d encontrada na folha %p\n", chavesParaInserir[i], n);
-        } else {
+        }
+        else
+        {
             printf("[ERRO] Chave %d NAO encontrada corretamente!\n", chavesParaInserir[i]);
         }
     }
@@ -884,7 +1056,7 @@ void testeEmprestaEsquerdoDireito()
 
     // Inserir chaves para gerar várias folhas e casos variados
 
-     int chavesParaInserir[] = {10, 20, 5, 15, 25, 30, 7, 50, 45, 60, 70, 40, 3, 2, 4};
+    int chavesParaInserir[] = {10, 20, 5, 15, 25, 30, 7, 50, 45, 60, 70, 40, 3, 2, 4};
     int qtd = sizeof(chavesParaInserir) / sizeof(chavesParaInserir[0]);
 
 
@@ -917,9 +1089,9 @@ void testeEmprestaEsquerdoDireito()
     inserir(&arv,70,0);
     imprimeArvore(arv.raiz, 0);
 
-        printf("\n[CASO II-A] Remover 30 \n");
-        deletarChave(&arv, 30);
-     imprimeArvore(arv.raiz, 0);
+    printf("\n[CASO II-A] Remover 30 \n");
+    deletarChave(&arv, 30);
+    imprimeArvore(arv.raiz, 0);
 
 }
 
@@ -990,6 +1162,38 @@ void testeDelecao()
 }
 
 
+void testeMergeRecursivoAteRaiz()
+{
+    printf("\n==== TESTE: MERGE RECURSIVO ATÉ A RAIZ ====\n");
+
+    Arvore arv;
+    arv.raiz = NULL;
+
+    // Cria árvore com 9 chaves (ordem 2 -> folhas com 4 chaves máx)
+    int chaves[] = {10, 20, 30, 40, 50, 60, 70, 80, 90};
+    for (int i = 0; i < 9; i++)
+    {
+        inserir(&arv, chaves[i], 0);
+    }
+
+    printf("\n[ANTES DAS REMOÇÕES]\n");
+    imprimeArvore(arv.raiz, 0);
+
+    // Remove todas as chaves menos uma, forçando merges até a raiz
+    int deletar[] = {90, 80, 70, 60, 50, 40, 30, 20};
+    for (int i = 0; i < 8; i++)
+    {
+        printf("\nRemovendo chave %d\n", deletar[i]);
+        deletarChave(&arv, deletar[i]);
+        imprimeArvore(arv.raiz, 0);
+    }
+
+    printf("\n[FINAL: DEVE TER APENAS UMA RAIZ FOLHA COM 10]\n");
+    imprimeArvore(arv.raiz, 0);
+    verificaEncadeamentoFolhas(arv.raiz);
+}
+
+
 /*============================================================*/
 
 int main()
@@ -999,9 +1203,11 @@ int main()
 
     //testeDelecao();
 
-     testeEmprestaEsquerdoDireito();
+    //testeEmprestaEsquerdoDireito();
 
-    testeDelecao();
+    //testeDelecao();
 
-return 0;
+    testeMergeRecursivoAteRaiz();
+
+    return 0;
 }
