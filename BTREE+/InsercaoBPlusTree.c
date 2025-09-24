@@ -711,6 +711,7 @@ void promoverNovoRaiz(Arvore *arv, No *paiAntigo)
     if (novaRaiz)
         novaRaiz->pai = NULL;
 
+
     free(paiAntigo->chaves);
     free(paiAntigo->filhos);
     free(paiAntigo);
