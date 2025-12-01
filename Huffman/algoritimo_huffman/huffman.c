@@ -362,6 +362,7 @@ char* codificar_buffer(char **dicionario, unsigned char *buf, long tam_buf) {
     return saida;
 }
 
+//testar?? funciona??
 char* decodificar(No *raiz, char *texto_codificado) {
     No *atual = raiz;
 
@@ -378,7 +379,7 @@ char* decodificar(No *raiz, char *texto_codificado) {
 
         if (atual->esq == NULL && atual->dir == NULL) {
             resultado[pos++] = atual->caracter;
-            atual = raiz; /// reset
+            atual = raiz;
         }
     }
 
