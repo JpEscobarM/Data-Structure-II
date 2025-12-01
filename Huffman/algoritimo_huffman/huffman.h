@@ -53,7 +53,7 @@ void ler_produtos_tabela_frequencia(const char *nome_arquivo, TabelaFrequencia *
 // FUNÇÕES DE FREQUÊNCIA
 //=========================
 void inicializa_tabela_frequencia(TabelaFrequencia *t);
-void organiza_tabela_frequencia(TabelaFrequencia *t);
+void organiza_tabela_frequencia(char *texto,int tamanho,TabelaFrequencia *t);
 void imprime_tabela_frequencia(TabelaFrequencia *t);
 void adiciona_frequencia_produto(Produto p, TabelaFrequencia *t);
 void adiciona_frequencia_pedido(Pedido p, TabelaFrequencia *t);
@@ -67,5 +67,13 @@ void criar_lista(Lista *lista);
 void inserir_ordenado(Lista *lista, No *no);
 void preencher_lista(TabelaFrequencia *t, Lista *lista);
 void imprimir_lista(Lista *lista);
+No* remove_no_inicio(Lista *lista);
+
+
+//==============
+//AROVRE DE HUFFMAN
+//==============
+No* montar_arvore(Lista *lista);
+void imprimir_arvore(No *raiz, int tam);
 
 #endif // HUFFMAN_H_INCLUDED

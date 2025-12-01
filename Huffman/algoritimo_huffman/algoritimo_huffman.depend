@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1764545545 source:d:\repos\data-structure-ii\huffman\algoritimo_huffman\main.c
+1764556803 source:d:\repos\data-structure-ii\huffman\algoritimo_huffman\main.c
 	<stdio.h>
 	<stdlib.h>
 	"huffman.h"
 
-1764547254 d:\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.h
+1764556115 d:\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.h
 
-1764543072 source:d:\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.c
+1764556936 source:d:\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.c
 	<stdio.h>
 	"huffman.h"
 
