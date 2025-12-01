@@ -93,4 +93,16 @@ int calcula_tamanho_string(char **dicionario, unsigned char *texto);
 //============================
 char* decodificar(unsigned char texto[], No *raiz);
 
+//============================
+//COMPACTAR
+//============================
+void compactar(unsigned char str[]);
+
+
+//============================
+//DESCOMPACTAR
+//============================
+unsigned int eh_bit_um(unsigned char byte, int i);
+void descompactar(No *raiz);
+
 #endif // HUFFMAN_H_INCLUDED

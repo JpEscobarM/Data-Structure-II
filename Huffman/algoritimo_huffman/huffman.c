@@ -407,3 +407,76 @@ char* decodificar(unsigned char texto[], No *raiz){
     }
     return decodificado;
 }
+
+
+/*
+  Compactar --
+*/
+void compactar(unsigned char str[]){
+    FILE *arquivo = fopen("compactado.jp", "wb");
+    int i = 0, j = 7;
+    unsigned char mascara, byte = 0; // 00000000
+
+    if(arquivo){
+        while(str[i] != '\0'){
+            mascara = 1;
+            if(str[i] == '1'){
+                mascara = mascara << j;
+                byte = byte | mascara;
+            }
+            j--;
+
+            if(j < 0){ // tem um byte formado
+                fwrite(&byte, sizeof(unsigned char), 1, arquivo);
+                byte = 0;
+                j = 7;
+            }
+
+            i++;
+        }
+        if(j != 7) // tem um byte em formação
+            fwrite(&byte, sizeof(unsigned char), 1, arquivo);
+        fclose(arquivo);
+    }
+    else
+        printf("\nErro ao abrir/criar arquivo em compactar\n");
+}
+
+/*
+     Função para testar o bit i
+*/
+unsigned int eh_bit_um(unsigned char byte, int i){
+    unsigned char mascara = (1 << i);
+    return byte & mascara;
+}
+
+/*
+     Função para ler o arquivo compactado e obter o texto original.
+*/
+
+void descompactar(No *raiz){
+    FILE *arquivo = fopen("compactado.jp", "rb");
+    No *aux = raiz;
+    unsigned char byte;
+    int i;
+
+    if(arquivo){
+        // enquanto conseguir ler do arquivo
+        while(fread(&byte, sizeof(unsigned char), 1, arquivo)){
+            for(i = 7; i >= 0; i--){
+                if(eh_bit_um(byte, i))
+                    aux = aux->dir;
+                else
+                    aux = aux->esq;
+
+                if(aux->esq == NULL && aux->dir == NULL){
+                    printf("%c", aux->caracter);// imprime o caracter do nó folha
+                    aux = raiz; // volta para a raiz da árvore
+                }
+            }
+        }
+        fclose(arquivo);
+    }
+    else
+        printf("\nErro ao abrir arquivo em descompactar\n");
+}

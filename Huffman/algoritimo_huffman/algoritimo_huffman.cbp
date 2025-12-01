@@ -34,6 +34,7 @@
 		<Unit filename="huffman.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="huffman.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
