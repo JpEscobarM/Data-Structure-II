@@ -46,14 +46,14 @@ typedef struct {
 // FUNÇÕES DE LEITURA
 //=========================
 void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t);
-void ler_produtos_tabela_frequencia(const char *nome_arquivo, TabelaFrequencia *t);
+char *ler_produtos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t);
 
 
 //=========================
 // FUNÇÕES DE FREQUÊNCIA
 //=========================
 void inicializa_tabela_frequencia(TabelaFrequencia *t);
-void organiza_tabela_frequencia(char *texto,int tamanho,TabelaFrequencia *t);
+char *organiza_tabela_frequencia(TabelaFrequencia *t);
 void imprime_tabela_frequencia(TabelaFrequencia *t);
 void adiciona_frequencia_produto(Produto p, TabelaFrequencia *t);
 void adiciona_frequencia_pedido(Pedido p, TabelaFrequencia *t);
@@ -68,12 +68,29 @@ void inserir_ordenado(Lista *lista, No *no);
 void preencher_lista(TabelaFrequencia *t, Lista *lista);
 void imprimir_lista(Lista *lista);
 No* remove_no_inicio(Lista *lista);
-
+void organiza_lista_encadeada_frequencia(Lista *l,TabelaFrequencia *t);
 
 //==============
 //AROVRE DE HUFFMAN
 //==============
 No* montar_arvore(Lista *lista);
 void imprimir_arvore(No *raiz, int tam);
+
+//==============
+//DICIONARIO
+//==============
+void organiza_dicionario(No *raiz, char ***dicionario);
+void imprime_dicionario(char **dicionario);
+
+//============================
+//FUNCOES CODIFICAR STRING
+//============================
+char* codificar(char **dicionario, unsigned char *texto);
+int calcula_tamanho_string(char **dicionario, unsigned char *texto);
+
+//============================
+//FUNCOES DECODIFICAR STRING
+//============================
+char* decodificar(unsigned char texto[], No *raiz);
 
 #endif // HUFFMAN_H_INCLUDED

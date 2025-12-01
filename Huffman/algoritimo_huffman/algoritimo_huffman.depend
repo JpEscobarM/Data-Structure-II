@@ -10,3 +10,16 @@
 	<stdio.h>
 	"huffman.h"
 
+1764595736 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\main.c
+	<stdio.h>
+	<stdlib.h>
+	"huffman.h"
+
+1764596048 c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.h
+
+1764595461 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"huffman.h"
+

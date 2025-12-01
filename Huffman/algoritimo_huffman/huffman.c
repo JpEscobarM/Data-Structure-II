@@ -1,6 +1,33 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "huffman.h"
 
+
+
+static int append_campo(char **ptexto, int *ptamanho, const char *campo) {
+    int lenCampo = (int)strlen(campo);
+    int novoTam = *ptamanho + lenCampo;
+
+    char *tmp = realloc(*ptexto, novoTam + 1);
+    if (!tmp) {
+        perror("realloc");
+        free(*ptexto);
+        *ptexto = NULL;
+        *ptamanho = 0;
+        return 0;
+    }
+
+    *ptexto = tmp;
+
+    // copia o campo direto para o final da string atual
+    memcpy(*ptexto + *ptamanho, campo, lenCampo);
+
+    *ptamanho = novoTam;
+    (*ptexto)[*ptamanho] = '\0';
+
+    return 1;
+}
 
 //========== FUNCOES DE LEITURA
 void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t) {
@@ -16,21 +43,54 @@ void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t)
 
     fclose(f);
 }
-
-void ler_produtos_tabela_frequencia(const char *nome_arquivo, TabelaFrequencia *t)
+char *ler_produtos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t)
 {
     FILE *f = fopen(nome_arquivo, "rb");
-    if (!f) { perror("Erro ao abrir produto.bin"); return; }
+    if (!f) {
+        perror("Erro ao abrir produto.bin");
+        return NULL;
+    }
+
+    char *texto = malloc(1);
+    if (!texto) {
+        perror("malloc");
+        fclose(f);
+        return NULL;
+    }
+    texto[0] = '\0';
+    int tamanho = 0;
 
     Produto p;
+
     while (fread(&p, sizeof(Produto), 1, f) == 1) {
-        p.id_produto[19]='\0'; p.alias[20]='\0'; p.preco[9]='\0';
-        p.genero[1]='\0'; p.cor[10]='\0'; p.material[10]='\0'; p.joia[10]='\0';
-        adiciona_frequencia_produto(p,t);
+
+        p.id_produto[19] = '\0';
+        p.alias[20]      = '\0';
+        p.preco[9]       = '\0';
+        p.genero[1]      = '\0';
+        p.cor[10]        = '\0';
+        p.material[10]   = '\0';
+        p.joia[10]       = '\0';
+
+        adiciona_frequencia_produto(p, t);
+        if (!append_campo(&texto, &tamanho, p.id_produto) ||
+            !append_campo(&texto, &tamanho, p.alias)      ||
+            !append_campo(&texto, &tamanho, p.preco)      ||
+            !append_campo(&texto, &tamanho, p.genero)     ||
+            !append_campo(&texto, &tamanho, p.cor)        ||
+            !append_campo(&texto, &tamanho, p.material)   ||
+            !append_campo(&texto, &tamanho, p.joia))
+        {
+
+            fclose(f);
+            return NULL;
+        }
     }
 
     fclose(f);
+    return texto;
 }
+
 
 void inicializa_tabela_frequencia(TabelaFrequencia *t)
 {
@@ -82,25 +142,7 @@ void imprime_tabela_frequencia(TabelaFrequencia *t)
     }
 }
 
-unsigned char* carregar_arquivo_como_texto(const char* nome, int* size_out) {
-    FILE *f = fopen(nome, "rb");
-    if (!f) return NULL;
 
-    fseek(f, 0, SEEK_END);
-    long tamanho = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    unsigned char *buffer = malloc(tamanho + 1);
-    if (!buffer) { fclose(f); return NULL; }
-
-    fread(buffer, 1, tamanho, f);
-    fclose(f);
-
-    buffer[tamanho] = '\0';   // garante comportamento de string
-    *size_out = tamanho;
-
-    return buffer;
-}
 
 void conta_buffer(unsigned char *buf, long tam, TabelaFrequencia *t) {
     for (long i = 0; i < tam; i++) {
@@ -110,19 +152,15 @@ void conta_buffer(unsigned char *buf, long tam, TabelaFrequencia *t) {
 }
 
 /*funcao que organiza a tabela de frequencia lendo o arquivo de pedidos e arquivo de produtos*/
-void organiza_tabela_frequencia(char *texto,int tamanho,TabelaFrequencia *t)
+char *organiza_tabela_frequencia(TabelaFrequencia *t)
 {
-     inicializa_tabela_frequencia(t);
+    inicializa_tabela_frequencia(t);
 
-    /*TENTANDO COM ARQUIVOS BINARIOS
-    char *arquivoProduto ="produto.bin";
-     ler_produtos_tabela_frequencia(arquivoProduto,t);
-     char *arquivoPedido = "pedido.bin";
-    ler_pedidos_tabela_frequencia(arquivoPedido,t);
 
-    */
+    char *textoProdutos = ler_produtos_tabela_frequencia("produto.bin", t);
 
-   conta_buffer(texto,tamanho,t);
+
+  return textoProdutos;  // por enquanto só produto.bin
 }
 
 
@@ -341,48 +379,31 @@ char* codificar(char **dicionario, unsigned char *texto) {
     return codigo;
 }
 
-char* codificar_buffer(char **dicionario, unsigned char *buf, long tam_buf) {
-    long tamanho_final = 0;
+/*
+      Função para decodificar um texto
+*/
 
-    // calcula tamanho exato
-    for (long i = 0; i < tam_buf; i++)
-        tamanho_final += strlen(dicionario[buf[i]]);
+char* decodificar(unsigned char texto[], No *raiz){
+    int i = 0;
+    No *aux = raiz;
+    char temp[2];
+    char *decodificado = calloc(strlen(texto), sizeof(char));
 
-    char *saida = calloc(tamanho_final + 1, 1);
-
-    long pos = 0;
-    for (long i = 0; i < tam_buf; i++) {
-        char *bits = dicionario[buf[i]];
-        long len = strlen(bits);
-        memcpy(saida + pos, bits, len);
-        pos += len;
-    }
-
-    saida[pos] = '\0';
-    return saida;
-}
-
-//testar?? funciona??
-char* decodificar(No *raiz, char *texto_codificado) {
-    No *atual = raiz;
-
-    int tamanho = strlen(texto_codificado);
-    char *resultado = calloc(10000000, sizeof(char)); // ajuste depois
-    int pos = 0;
-
-    for (int i = 0; i < tamanho; i++) {
-
-        if (texto_codificado[i] == '0')
-            atual = atual->esq;
+    while(texto[i] != '\0'){
+        if(texto[i] == '0')
+            aux = aux->esq; // caminha para a esquerda
         else
-            atual = atual->dir;
+            aux = aux->dir; // caminha para a direita
 
-        if (atual->esq == NULL && atual->dir == NULL) {
-            resultado[pos++] = atual->caracter;
-            atual = raiz;
+        // se for um nó folha concatena o caracter e volta para a raiz da árvore
+        if(aux->esq == NULL && aux->dir == NULL){
+            temp[0] = aux->caracter;
+            temp[1] = '\0';
+            strcat(decodificado, temp);
+            aux = raiz;
         }
-    }
 
-    resultado[pos] = '\0';
-    return resultado;
+        i++;
+    }
+    return decodificado;
 }
