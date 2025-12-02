@@ -10,14 +10,14 @@
 	<stdio.h>
 	"huffman.h"
 
-1764619190 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\main.c
+1764697935 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\main.c
 	<stdio.h>
 	<stdlib.h>
 	"huffman.h"
 
-1764687819 c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.h
+1764693837 c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.h
 
-1764687975 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.c
+1764699773 source:c:\users\jmartins\repos\data-structure-ii\huffman\algoritimo_huffman\huffman.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

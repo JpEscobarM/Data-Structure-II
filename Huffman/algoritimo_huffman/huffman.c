@@ -30,18 +30,48 @@ static int append_campo(char **ptexto, int *ptamanho, const char *campo) {
 }
 
 //========== FUNCOES DE LEITURA
-void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t) {
+char *ler_pedidos_tabela_frequencia(const char *nome_arquivo) {
     FILE *f = fopen(nome_arquivo, "rb");
-    if (!f) { perror("Erro ao abrir pedido.bin"); return; }
+    if (!f) { perror("Erro ao abrir pedido.bin"); return NULL; }
+
+    char *texto = malloc(1);
+    if (!texto) {
+        perror("malloc");
+        fclose(f);
+        return NULL;
+    }
+    texto[0] = '\0';
+    int tamanho = 0;
 
     Pedido p;
-    while (fread(&p, sizeof(Pedido), 1, f) == 1 ) {
-        p.data[10]='\0'; p.id_pedido[19]='\0'; p.preco[9]='\0';
 
-        adiciona_frequencia_pedido(p,t);
+    char stringTemp[256];
+     //printf("\nlendo arquivo pedido...");
+    while (fread(&p, sizeof(Pedido), 1, f) == 1 ) {
+        p.data[10]='\0';
+        p.id_pedido[19]='\0';
+        p.preco[9]='\0';
+
+        //printf("%s %s %s", p.id_pedido,p.data,p.preco);
+         snprintf(stringTemp, sizeof(stringTemp), "%s;%s;%s;\n",
+                 p.id_pedido,
+                 p.data,
+                 p.preco);
+
+
+        if (!append_campo(&texto, &tamanho,stringTemp))
+        {
+            printf("\nERRO AO LER PEDIDO");
+            fclose(f);
+            free(texto);
+            return NULL;
+        }
     }
 
     fclose(f);
+    //printf("\nTerminou de ler pedido...");
+
+    return texto;
 }
 
 char *ler_produtos_tabela_frequencia(const char *nome_arquivo)
@@ -63,7 +93,7 @@ char *ler_produtos_tabela_frequencia(const char *nome_arquivo)
 
     Produto p;
     char stringTemp[256];
-
+    //printf("\nlendo arquivo produto...");
     while (fread(&p, sizeof(Produto), 1, f) == 1) {
 
 
@@ -89,11 +119,13 @@ char *ler_produtos_tabela_frequencia(const char *nome_arquivo)
         {
             printf("\nERRO AO LER PRODUTO");
             fclose(f);
+            free(texto);
             return NULL;
         }
 
     }
     fclose(f);
+   // printf("\nTerminou de ler produto...");
     return texto;
 }
 
@@ -163,13 +195,34 @@ void conta_buffer(unsigned char *buf, long tam, TabelaFrequencia *t) {
 }
 
 /*funcao que organiza a tabela de frequencia lendo o arquivo de pedidos e arquivo de produtos*/
-char *organiza_tabela_frequencia(TabelaFrequencia *t)
+char *organiza_tabela_frequencia(TabelaFrequencia *t, char *nome_arquivo)
 {
     inicializa_tabela_frequencia(t);
-    char *textoProdutos = ler_produtos_tabela_frequencia("produto.bin");
-    adiciona_frequencia_texto(textoProdutos,t);
+    char *texto = NULL;
 
-  return textoProdutos;  // por enquanto só produto.bin
+    if (strcasecmp(nome_arquivo, "produto.bin") == 0)     // iguais
+    {
+        texto = ler_produtos_tabela_frequencia("produto.bin");
+    }
+    else if (strcasecmp(nome_arquivo, "pedido.bin") == 0)
+    {
+        texto = ler_pedidos_tabela_frequencia("pedido.bin");
+    }
+    else
+    {
+        printf("Arquivo inválido: %s\n", nome_arquivo);
+        return NULL;
+    }
+
+     if (!texto) {
+        printf("Erro ao gerar texto\n");
+        return NULL;
+    }
+
+
+    adiciona_frequencia_texto(texto,t);
+
+    return texto;  // por enquanto só produto.bin
 }
 
 
@@ -250,8 +303,10 @@ No* remove_no_inicio(Lista *lista){
 }
 void organiza_lista_encadeada_frequencia(Lista *l,TabelaFrequencia *t)
 {
+    //printf("\norganizando lista encadeada de frequencia...");
     criar_lista(l);
     preencher_lista(t,l);
+   // printf("\nfinalizou...");
 }
 
 /*
@@ -345,7 +400,7 @@ void gerar_dicionario(char **dicionario, No *raiz, char *caminho, int colunas){
 */
 void imprime_dicionario(char **dicionario){
     int i;
-    printf("\n\tDicionario:\n");
+    printf("\n\tDicionario:");
     for(i = 0; i < 255; i++){
         if(strlen(dicionario[i]) > 0)
             printf("\t[%c] %3d: %s\n",i,i, dicionario[i]);
@@ -355,10 +410,12 @@ void imprime_dicionario(char **dicionario){
 
 void organiza_dicionario(No *raiz, char ***dicionario)
 {
-   int nro_colunas = altura_arvore(raiz);
+    int nro_colunas = altura_arvore(raiz);
+   // printf("\nCriando Dicionario de mapeamento 0 e 1 ...");
+
     *dicionario = aloca_dicionario(nro_colunas+2);
     gerar_dicionario(*dicionario,raiz,"",nro_colunas);
-
+    //printf("\nDicionario criado...");
 }
 
 
@@ -379,12 +436,15 @@ int calcula_tamanho_string(char **dicionario, unsigned char *texto) {
      Função que codifica o texto. O retorno é o endereço da string codificada
 */
 char* codificar(char **dicionario, unsigned char *texto) {
+   // printf("\nCodificando texto com base no dicionario...");
     int tam = calcula_tamanho_string(dicionario, texto);
     char *codigo = calloc(tam, sizeof(char));
 
     for (int i = 0; texto[i] != '\0'; i++) {
         strcat(codigo, dicionario[texto[i]]);
     }
+
+   // printf("\nCodificou.");
     return codigo;
 }
 
@@ -394,10 +454,14 @@ char* codificar(char **dicionario, unsigned char *texto) {
 
 char* decodificar(unsigned char texto[], No *raiz){
     int i = 0;
+
+
     No *aux = raiz;
     char temp[2];
     char *decodificado = calloc(strlen(texto), sizeof(char));
 
+
+   // printf("\nDecoficando...");
     while(texto[i] != '\0'){
         if(texto[i] == '0')
             aux = aux->esq; // caminha para a esquerda
@@ -414,6 +478,7 @@ char* decodificar(unsigned char texto[], No *raiz){
 
         i++;
     }
+   // printf("\nDecoficado...");
     return decodificado;
 }
 

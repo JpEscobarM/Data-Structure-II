@@ -45,15 +45,15 @@ typedef struct {
 //=========================
 // FUNÇÕES DE LEITURA
 //=========================
-void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t);
-char *ler_produtos_tabela_frequencia(const char *nome_arquivo);//MODIFICADO
+char *ler_pedidos_tabela_frequencia(const char *nome_arquivo);
+char *ler_produtos_tabela_frequencia(const char *nome_arquivo);
 
 
 //=========================
 // FUNÇÕES DE FREQUÊNCIA
 //=========================
 void inicializa_tabela_frequencia(TabelaFrequencia *t);
-char *organiza_tabela_frequencia(TabelaFrequencia *t);
+char *organiza_tabela_frequencia(TabelaFrequencia *t, char *nome_arquivo);
 void imprime_tabela_frequencia(TabelaFrequencia *t);
 
 void adiciona_frequencia_produto(Produto p, TabelaFrequencia *t);

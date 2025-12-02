@@ -15,23 +15,23 @@ int main()
 
 
     //1 - organizar tabela de frequencia
-   texto =  organiza_tabela_frequencia(&tabela);
-    imprime_tabela_frequencia(&tabela);
-    printf("\n");
+    texto =  organiza_tabela_frequencia(&tabela,"produto.bin");
+    //imprime_tabela_frequencia(&tabela);
+    //printf("\n");
 
     //2- montar fila de frequencia
     organiza_lista_encadeada_frequencia(&listaFrequencia,&tabela);
-    imprimir_lista(&listaFrequencia);
-    printf("\n");
+    //imprimir_lista(&listaFrequencia);
+    //printf("\n");
     //3- montar arvore binaria de frequencia
 
     arvore = montar_arvore(&listaFrequencia);
-    printf("\tArvore huffman\n");
-    imprimir_arvore(arvore,0);
+    //printf("\tArvore huffman\n");
+    //imprimir_arvore(arvore,0);
 
     //4- organizar dicionario
     organiza_dicionario(arvore,&dicionario);
-    imprime_dicionario(dicionario);
+    //imprime_dicionario(dicionario);
 
     //5- Codificar a partir dados a partir do dicionario
     //printf("\nTEXTO ORIGINAL:%s\n",texto);
@@ -40,8 +40,8 @@ int main()
 
    // printf("\n\tTexto codificado: %s\n",codificado);
 
-   // decodificado = decodificar(codificado,arvore);
-  //  printf("\n\tTexto decodificado: %s\n",decodificado);
+    //decodificado = decodificar(codificado,arvore);
+    //printf("\n\tTexto decodificado: %s\n",decodificado);
     descompactar(arvore);
 
 
