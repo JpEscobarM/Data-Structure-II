@@ -43,7 +43,8 @@ void ler_pedidos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t)
 
     fclose(f);
 }
-char *ler_produtos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *t)
+
+char *ler_produtos_tabela_frequencia(const char *nome_arquivo)
 {
     FILE *f = fopen(nome_arquivo, "rb");
     if (!f) {
@@ -61,8 +62,10 @@ char *ler_produtos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *
     int tamanho = 0;
 
     Produto p;
+    char stringTemp[256];
 
     while (fread(&p, sizeof(Produto), 1, f) == 1) {
+
 
         p.id_produto[19] = '\0';
         p.alias[20]      = '\0';
@@ -72,21 +75,24 @@ char *ler_produtos_tabela_frequencia(const char *nome_arquivo,TabelaFrequencia *
         p.material[10]   = '\0';
         p.joia[10]       = '\0';
 
-        adiciona_frequencia_produto(p, t);
-        if (!append_campo(&texto, &tamanho, p.id_produto) ||
-            !append_campo(&texto, &tamanho, p.alias)      ||
-            !append_campo(&texto, &tamanho, p.preco)      ||
-            !append_campo(&texto, &tamanho, p.genero)     ||
-            !append_campo(&texto, &tamanho, p.cor)        ||
-            !append_campo(&texto, &tamanho, p.material)   ||
-            !append_campo(&texto, &tamanho, p.joia))
-        {
 
+        snprintf(stringTemp, sizeof(stringTemp), "%s;%s;%s;%s;%s;%s;%s;\n",
+                 p.id_produto,
+                 p.alias,
+                 p.preco,
+                 p.genero,
+                 p.cor,
+                 p.material,
+                 p.joia);
+
+        if (!append_campo(&texto, &tamanho,stringTemp))
+        {
+            printf("\nERRO AO LER PRODUTO");
             fclose(f);
             return NULL;
         }
-    }
 
+    }
     fclose(f);
     return texto;
 }
@@ -132,6 +138,11 @@ void adiciona_frequencia_produto(Produto p, TabelaFrequencia *t)
     conta_string(p.material,t);
     conta_string(p.preco,t);
 }
+void adiciona_frequencia_texto(char *texto, TabelaFrequencia *t)
+{
+    conta_string(texto,t);
+}
+
 
 void imprime_tabela_frequencia(TabelaFrequencia *t)
 {
@@ -155,10 +166,8 @@ void conta_buffer(unsigned char *buf, long tam, TabelaFrequencia *t) {
 char *organiza_tabela_frequencia(TabelaFrequencia *t)
 {
     inicializa_tabela_frequencia(t);
-
-
-    char *textoProdutos = ler_produtos_tabela_frequencia("produto.bin", t);
-
+    char *textoProdutos = ler_produtos_tabela_frequencia("produto.bin");
+    adiciona_frequencia_texto(textoProdutos,t);
 
   return textoProdutos;  // por enquanto só produto.bin
 }
@@ -471,6 +480,8 @@ void descompactar(No *raiz){
 
                 if(aux->esq == NULL && aux->dir == NULL){
                     printf("%c", aux->caracter);// imprime o caracter do nó folha
+
+
                     aux = raiz; // volta para a raiz da árvore
                 }
             }
