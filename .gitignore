@@ -4,3 +4,6 @@
 
 #ignora arquivos objeto
 *.o
+
+
+*.csv

@@ -1,0 +1,350 @@
+# depslib dependency file v1.0
+1760203979 source:d:\repos\trabalho i\projeto-trabalho-i\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
+1761129439 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\main.c
+	"menuTeste.h"
+
+1760887308 source:d:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1760748362 d:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\hash.c
+	"hash.h"
+	<stdlib.h>
+	<string.h>
+
+1760748362 d:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\hash.h
+
+1760748362 d:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\arquivo_indice.c
+	"./arquivo_indice.h"
+
+1760748362 d:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\arquivo_indice.h
+	<stdio.h>
+	"./hash.h"
+
+1761107583 source:c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\main.c
+	"menuTeste.h"
+
+1761106363 c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\types.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1761107075 source:c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\pedido.c
+	"types.h"
+	"sort.h"
+	"pedido.h"
+
+1761106683 c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\sort.h
+	"types.h"
+
+1761106885 c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\pedido.h
+	"types.h"
+
+1761107174 source:c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\produto.c
+	"types.h"
+	"sort.h"
+	"produto.h"
+
+1761106821 c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\produto.h
+	"types.h"
+
+1761106976 source:c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\sort.c
+	"sort.h"
+
+1761107443 c:\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\menuteste.h
+	"types.h"
+	"pedido.h"
+	"produto.h"
+
+1761156662 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\menuteste.h
+	"associacao_index.h"
+	"consulta_maior_total.h"
+	"associacao_prod_index.h"
+	"types.h"
+	"pedido.h"
+	"produto.h"
+
+1761156154 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\types.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1761129439 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\pedido.h
+	"types.h"
+
+1761222365 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\produto.h
+	"types.h"
+
+1764704537 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\menuteste.c
+	"menuTeste.h"
+	"associacao.h"
+	"huffman.h"
+	<stdio.h>
+	<string.h>
+
+1761141027 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\pedido.c
+	"types.h"
+	"sort.h"
+	"pedido.h"
+
+1761157235 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\sort.h
+	"types.h"
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\produto.c
+	"types.h"
+	"sort.h"
+	"produto.h"
+	"util.h"
+
+1761157184 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\sort.c
+	"sort.h"
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao_index.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"types.h"
+	"associacao_index.h"
+	"sort.h"
+
+1761222365 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao_index.h
+	"sort.h"
+	"types.h"
+	"util.h"
+
+1761158075 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\consulta_maior_total.c
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+	"types.h"
+	"associacao_index.h"
+	"consulta_maior_total.h"
+	"pedido.h"
+	"produto.h"
+
+1761147131 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\consulta_maior_total.h
+	"types.h"
+
+1761157723 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao_prod_index.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"types.h"
+	"sort.h"
+	"produto.h"
+	"associacao_prod_index.h"
+
+1761157327 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao_prod_index.h
+
+1761129439 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\util.h
+
+1764785453 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\huffman.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"huffman.h"
+
+1764704601 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\huffman.h
+	"types.h"
+
+1761222365 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao.h
+	<stdio.h>
+	"bptree.h"
+	"dados.h"
+	"util.h"
+
+1761222365 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\bptree.h
+	"./util.h"
+
+1761155378 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\dados.h
+	"types.h"
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\arquivo_indice.c
+	"./arquivo_indice.h"
+	<stdlib.h>
+
+1761155378 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\arquivo_indice.h
+	<stdio.h>
+	"./hash.h"
+	"./bptree.h"
+
+1761129439 c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\hash.h
+	"util.h"
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\associacao.c
+	"associacao.h"
+	"arquivo_indice.h"
+	<stdlib.h>
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\bptree.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"bptree.h"
+
+1761222365 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\hash.c
+	"hash.h"
+	<stdlib.h>
+	<string.h>
+
+1761129439 source:c:\users\jmartins\repos\trabalho-algoritmos-e-estruturas-2\projeto-trabalho-i\util.c
+	"./util.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\arquivo_indice.c
+	"./arquivo_indice.h"
+	<stdlib.h>
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\arquivo_indice.h
+	<stdio.h>
+	"./hash.h"
+	"./bptree.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\hash.h
+	"util.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\util.h
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\bptree.h
+	"./util.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao.c
+	"associacao.h"
+	"arquivo_indice.h"
+	<stdlib.h>
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao.h
+	<stdio.h>
+	"bptree.h"
+	"dados.h"
+	"util.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\dados.h
+	"types.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\types.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao_index.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"types.h"
+	"associacao_index.h"
+	"sort.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao_index.h
+	"sort.h"
+	"types.h"
+	"util.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\sort.h
+	"types.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao_prod_index.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"types.h"
+	"sort.h"
+	"produto.h"
+	"associacao_prod_index.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\produto.h
+	"types.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\associacao_prod_index.h
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\bptree.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"bptree.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\consulta_maior_total.c
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+	"types.h"
+	"associacao_index.h"
+	"consulta_maior_total.h"
+	"pedido.h"
+	"produto.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\consulta_maior_total.h
+	"types.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\pedido.h
+	"types.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\hash.c
+	"hash.h"
+	<stdlib.h>
+	<string.h>
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\huffman.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"huffman.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\huffman.h
+	"types.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\main.c
+	"menuTeste.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\menuteste.h
+	"associacao_index.h"
+	"consulta_maior_total.h"
+	"associacao_prod_index.h"
+	"indice_preco.h"
+	"types.h"
+	"pedido.h"
+	"produto.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\indice_preco.h
+	"arquivo_indice.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\menuteste.c
+	"menuTeste.h"
+	"associacao.h"
+	"huffman.h"
+	"produto_hash.h"
+	"teste_performance.h"
+	<stdio.h>
+	<string.h>
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\produto_hash.h
+	"hash.h"
+	"produto.h"
+
+1777907157 c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\teste_performance.h
+	<time.h>
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\pedido.c
+	"types.h"
+	"sort.h"
+	"pedido.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\produto.c
+	"types.h"
+	"sort.h"
+	"produto.h"
+	"hash.h"
+	"util.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\sort.c
+	"sort.h"
+
+1777907157 source:c:\users\jmartins\repos\data-structure-ii\trabalho-algoritmos-e-estruturas-2-main\projeto-trabalho-i\util.c
+	"./util.h"
+
